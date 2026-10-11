@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex Gratuity Engine // High-Tech Tip & Split Calculator</title>
+  <style>
+    :root {
+      --bg-base: #060911;
+      --bg-surface: rgba(13, 20, 36, 0.72);
+      --bg-surface-elevated: rgba(20, 32, 58, 0.85);
+      --bg-card: rgba(15, 23, 42, 0.65);
+      --border-subtle: rgba(56, 189, 248, 0.15);
+      --border-highlight: rgba(56, 189, 248, 0.45);
+      --border-glow: rgba(56, 189, 248, 0.8);
+      --cyan-primary: #00f0ff;
+      --cyan-glow: rgba(0, 240, 255, 0.25);
+      --cyan-muted: #38bdf8;
+      --emerald-accent: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", "Cascadia Code", "Roboto Mono", "Fira Code", monospace;
+      --transition-smooth: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
+        linear-gradient(to bottom, rgba(6, 9, 17, 0.85), var(--bg-base)),
+        radial-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 28px 28px;
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient cyber grid scanline overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      opacity: 0.25;
+      z-index: 1;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1100px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header Bar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: var(--bg-surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(16, 185, 129, 0.2));
+      border: 1px solid var(--border-highlight);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cyan-primary);
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+
+    .brand-title h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title h1 span.tag {
+      font-size: 0.65rem;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid var(--border-highlight);
+      color: var(--cyan-primary);
+      font-family: var(--font-mono);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .currency-selector {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-subtle);
+      color: var(--cyan-primary);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 7px 12px;
+      border-radius: var(--radius-sm);
+      outline: none;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .currency-selector:hover, .currency-selector:focus {
+      border-color: var(--cyan-primary);
+      box-shadow: 0 0 12px var(--cyan-glow);
+    }
+
+    .btn-icon {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-icon:hover {
+      color: var(--cyan-primary);
+      border-color: var(--border-highlight);
+      box-shadow: 0 0 12px var(--cyan-glow);
+      transform: translateY(-1px);
+    }
+
+    /* Main Grid Layout */
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Input & Control Panel */
+    .panel {
+      background: var(--bg-surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 30px;
+      right: 30px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-highlight), transparent);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--cyan-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-badge {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+    }
+
+    /* Bill Input Box */
+    .bill-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .currency-symbol-large {
+      position: absolute;
+      left: 20px;
+      font-size: 2rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--cyan-primary);
+      pointer-events: none;
+      transition: var(--transition-smooth);
+    }
+
+    .bill-input {
+      width: 100%;
+      background: rgba(6, 11, 23, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px 20px 18px 56px;
+      font-size: 2.2rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #ffffff;
+      outline: none;
+      transition: var(--transition-smooth);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .bill-input:focus {
+      border-color: var(--cyan-primary);
+      box-shadow: 0 0 20px var(--cyan-glow), inset 0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .bill-input::placeholder {
+      color: rgba(255, 255, 255, 0.15);
+    }
+
+    .bill-quick-chips {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .chip-btn {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .chip-btn:hover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: var(--border-highlight);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Tip Selection Section */
+    .tip-presets {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 500px) {
+      .tip-presets {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .tip-preset-btn {
+      background: rgba(10, 16, 31, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 6px;
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tip-preset-btn span.label-sub {
+      font-size: 0.65rem;
+      font-family: var(--font-ui);
+      font-weight: 500;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tip-preset-btn:hover {
+      border-color: var(--cyan-muted);
+      background: rgba(15, 25, 48, 0.9);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .tip-preset-btn.active {
+      border-color: var(--cyan-primary);
+      background: linear-gradient(180deg, rgba(0, 240, 255, 0.15) 0%, rgba(10, 22, 45, 0.9) 100%);
+      color: var(--cyan-primary);
+      box-shadow: 0 0 16px var(--cyan-glow), inset 0 0 12px rgba(0, 240, 255, 0.1);
+    }
+
+    .tip-preset-btn.active span.label-sub {
+      color: var(--cyan-muted);
+    }
+
+    /* Slider Container */
+    .slider-box {
+      margin-top: 14px;
+      background: rgba(6, 11, 23, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .slider-val-tag {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--cyan-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .custom-input-stepper {
+      width: 68px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 4px 8px;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: right;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .custom-input-stepper:focus {
+      border-color: var(--cyan-primary);
+      box-shadow: 0 0 8px var(--cyan-glow);
+    }
+
+    /* Range Slider Styling */
+    .range-input {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: rgba(30, 41, 59, 0.8);
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid var(--cyan-primary);
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--cyan-primary);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .range-input::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 18px var(--cyan-primary);
+    }
+
+    .range-input::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid var(--cyan-primary);
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--cyan-primary);
+    }
+
+    /* Split Section */
+    .split-control-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .split-slider-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .split-stepper-box {
+      display: flex;
+      align-items: center;
+      background: rgba(6, 11, 23, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .stepper-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .stepper-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--cyan-primary);
+      border-color: var(--border-highlight);
+    }
+
+    .people-count-display {
+      width: 52px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #ffffff;
+      border: none;
+      background: transparent;
+      outline: none;
+    }
+
+    /* People Visual Indicator Dots */
+    .people-indicator {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      min-height: 18px;
+    }
+
+    .person-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan-muted);
+      box-shadow: 0 0 6px var(--cyan-glow);
+      transition: var(--transition-smooth);
+      animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Rounding Mode Section */
+    .rounding-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 550px) {
+      .rounding-options {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .round-card {
+      background: rgba(10, 16, 31, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 10px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+
+    .round-card:hover {
+      border-color: var(--border-highlight);
+      background: rgba(15, 25, 48, 0.85);
+      transform: translateY(-2px);
+    }
+
+    .round-card.active {
+      border-color: var(--emerald-accent);
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.15) 0%, rgba(10, 22, 45, 0.9) 100%);
+      box-shadow: 0 0 16px var(--emerald-glow), inset 0 0 10px rgba(16, 185, 129, 0.1);
+    }
+
+    .round-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .round-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+    }
+
+    .round-card.active .round-card-title {
+      color: var(--emerald-accent);
+    }
+
+    .round-indicator-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--text-dim);
+      transition: var(--transition-smooth);
+    }
+
+    .round-card.active .round-indicator-dot {
+      border-color: var(--emerald-accent);
+      background: var(--emerald-accent);
+      box-shadow: 0 0 8px var(--emerald-accent);
+    }
+
+    .round-card-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .round-status-badge {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--emerald-accent);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* Right HUD Result Panel */
+    .hud-panel {
+      background: linear-gradient(160deg, rgba(10, 18, 38, 0.85) 0%, rgba(6, 12, 24, 0.95) 100%);
+      backdrop-filter: blur(25px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hud-panel::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .hud-title {
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--cyan-muted);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cyan-primary);
+      box-shadow: 0 0 8px var(--cyan-primary);
+      animation: pulseAnim 2s infinite;
+    }
+
+    @keyframes pulseAnim {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .system-status {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--emerald-accent);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    /* Primary Hero Metric: Each Person Pays */
+    .hero-metric {
+      background: rgba(6, 11, 24, 0.7);
+      border: 1px solid var(--border-highlight);
+      border-radius: var(--radius-lg);
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.08);
+    }
+
+    .hero-metric::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan-primary), transparent);
+    }
+
+    .hero-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--cyan-muted);
+      margin-bottom: 6px;
+    }
+
+    .hero-value {
+      font-size: 3.2rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #ffffff;
+      text-shadow: 0 0 25px var(--cyan-glow);
+      line-height: 1.1;
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+    }
+
+    .hero-subtext {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* Detailed Breakdown Matrix */
+    .breakdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: var(--radius-sm);
+      transition: var(--transition-smooth);
+    }
+
+    .breakdown-row:hover {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: rgba(56, 189, 248, 0.2);
+    }
+
+    .breakdown-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .breakdown-label svg {
+      color: var(--cyan-muted);
+      width: 14px;
+      height: 14px;
+    }
+
+    .breakdown-value {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .breakdown-row.accent-total {
+      background: rgba(0, 240, 255, 0.06);
+      border-color: rgba(0, 240, 255, 0.25);
+    }
+
+    .breakdown-row.accent-total .breakdown-value {
+      color: var(--cyan-primary);
+      font-size: 1.2rem;
+    }
+
+    .breakdown-row.accent-tip .breakdown-value {
+      color: var(--emerald-accent);
+    }
+
+    /* Audit & Rounding Delta Tag */
+    .rounding-delta-container {
+      background: rgba(6, 11, 23, 0.6);
+      border: 1px dashed rgba(56, 189, 248, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+    }
+
+    .delta-text {
+      color: var(--text-muted);
+    }
+
+    .delta-badge {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--emerald-accent);
+      background: rgba(16, 185, 129, 0.12);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Action Buttons in HUD */
+    .hud-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-action-primary {
+      flex: 1;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      border: 1px solid var(--cyan-primary);
+      color: #ffffff;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition-smooth);
+      box-shadow: 0 4px 18px rgba(14, 165, 233, 0.35);
+    }
+
+    .btn-action-primary:hover {
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      box-shadow: 0 6px 24px rgba(56, 189, 248, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-action-secondary {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-action-secondary:hover {
+      background: rgba(30, 41, 59, 0.8);
+      color: #ffffff;
+      border-color: var(--border-highlight);
+      transform: translateY(-2px);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--cyan-primary);
+      box-shadow: 0 10px 30px rgba(0, 240, 255, 0.25);
+      backdrop-filter: blur(16px);
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      color: #ffffff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Per-person Visual Roster Dropdown / Modal */
+    .roster-card {
+      margin-top: 14px;
+      background: rgba(6, 11, 23, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+    }
+
+    .roster-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--cyan-muted);
+      font-weight: 600;
+    }
+
+    .roster-content {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .roster-item {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .roster-item-name {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+
+    .roster-item-amount {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    /* Footer Info */
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+
+    footer span.sep {
+      color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(6, 11, 23, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.25);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(56, 189, 248, 0.45);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Top Bar -->
+    <header>
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+        </div>
+        <div class="brand-title">
+          <h1>APEX TIP // PRO <span class="tag">PRECISION ENGINE</span></h1>
+          <p>Next-Gen High-Tech Gratuity & Bill Splitting Matrix</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <select id="currencySelect" class="currency-selector" title="Select Currency">
+          <option value="$" selected>USD ($)</option>
+          <option value="€">EUR (€)</option>
+          <option value="£">GBP (£)</option>
+          <option value="¥">JPY (¥)</option>
+          <option value="CA$">CAD ($)</option>
+          <option value="A$">AUD ($)</option>
+          <option value="CHF">CHF (₣)</option>
+        </select>
+        <button id="btnReset" class="btn-icon" title="Reset All Values">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <div class="calculator-grid">
+      <!-- Input Control Panel -->
+      <section class="panel">
+        <!-- 1. Bill Input -->
+        <div class="control-group">
+          <div class="section-header">
+            <span class="section-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+              Base Bill Amount
+            </span>
+            <span class="section-badge">PRIMARY INPUT</span>
+          </div>
+          <div class="bill-input-wrapper">
+            <span id="currencySymbolLarge" class="currency-symbol-large">$</span>
+            <input type="number" id="billInput" class="bill-input" placeholder="0.00" min="0" step="0.01" autofocus>
+          </div>
+          <div class="bill-quick-chips">
+            <button class="chip-btn" data-bill="25">$25.00</button>
+            <button class="chip-btn" data-bill="50">$50.00</button>
+            <button class="chip-btn" data-bill="75">$75.00</button>
+            <button class="chip-btn" data-bill="100">$100.00</button>
+            <button class="chip-btn" data-bill="150">$150.00</button>
+            <button class="chip-btn" data-bill="200">$200.00</button>
+          </div>
+        </div>
+
+        <!-- 2. Adjustable Tip Percentage -->
+        <div class="control-group">
+          <div class="section-header">
+            <span class="section-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              Gratuity / Tip Rate
+            </span>
+            <span class="section-badge" id="tipPercentageReadout">20% SELECTED</span>
+          </div>
+
+          <div class="tip-presets">
+            <button class="tip-preset-btn" data-tip="10">
+              10%
+              <span class="label-sub">Standard</span>
+            </button>
+            <button class="tip-preset-btn" data-tip="15">
+              15%
+              <span class="label-sub">Good</span>
+            </button>
+            <button class="tip-preset-btn" data-tip="18">
+              18%
+              <span class="label-sub">Great</span>
+            </button>
+            <button class="tip-preset-btn active" data-tip="20">
+              20%
+              <span class="label-sub">Generous</span>
+            </button>
+            <button class="tip-preset-btn" data-tip="25">
+              25%
+              <span class="label-sub">Superior</span>
+            </button>
+          </div>
+
+          <div class="slider-box">
+            <div class="slider-header">
+              <span style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase;">Fine-Tune Slider</span>
+              <div class="slider-val-tag">
+                <input type="number" id="tipCustomInput" class="custom-input-stepper" min="0" max="100" value="20" step="1">
+                <span>%</span>
+              </div>
+            </div>
+            <input type="range" id="tipRangeSlider" class="range-input" min="0" max="50" value="20" step="1">
+          </div>
+        </div>
+
+        <!-- 3. Split Between People -->
+        <div class="control-group">
+          <div class="section-header">
+            <span class="section-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              Split Group Size
+            </span>
+            <span class="section-badge" id="peopleReadout">1 PERSON (SOLO)</span>
+          </div>
+
+          <div class="split-control-grid">
+            <div class="split-slider-wrap">
+              <input type="range" id="peopleRangeSlider" class="range-input" min="1" max="20" value="1" step="1">
+              <div id="peopleIndicator" class="people-indicator">
+                <div class="person-dot"></div>
+              </div>
+            </div>
+
+            <div class="split-stepper-box">
+              <button id="btnPersonMinus" class="stepper-btn" title="Decrease Person">−</button>
+              <input type="number" id="peopleInput" class="people-count-display" value="1" min="1" max="100">
+              <button id="btnPersonPlus" class="stepper-btn" title="Increase Person">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Rounding Options -->
+        <div class="control-group">
+          <div class="section-header">
+            <span class="section-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              Precision & Rounding Logic
+            </span>
+            <span class="section-badge" id="roundingStatusBadge">EXACT (NO ROUND)</span>
+          </div>
+
+          <div class="rounding-options">
+            <!-- Mode 1: Exact -->
+            <div class="round-card active" data-round="exact">
+              <div class="round-card-header">
+                <span class="round-card-title">Exact Cents</span>
+                <div class="round-indicator-dot"></div>
+              </div>
+              <p class="round-card-desc">Exact mathematical calculation to the penny.</p>
+              <span class="round-status-badge">Default Precision</span>
+            </div>
+
+            <!-- Mode 2: Round Up Per Person -->
+            <div class="round-card" data-round="person">
+              <div class="round-card-header">
+                <span class="round-card-title">Round Up / Person</span>
+                <div class="round-indicator-dot"></div>
+              </div>
+              <p class="round-card-desc">Rounds each individual's total up to next whole dollar.</p>
+              <span class="round-status-badge">Clean Split</span>
+            </div>
+
+            <!-- Mode 3: Round Up Total Bill -->
+            <div class="round-card" data-round="total">
+              <div class="round-card-header">
+                <span class="round-card-title">Round Up Total</span>
+                <div class="round-indicator-dot"></div>
+              </div>
+              <p class="round-card-desc">Rounds entire combined bill up to next whole dollar.</p>
+              <span class="round-status-badge">Cash Friendly</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results HUD Panel -->
+      <aside class="hud-panel">
+        <div>
+          <div class="hud-header">
+            <div class="hud-title">
+              <div class="pulse-dot"></div>
+              LIVE OUTPUT // TELEMETRY
+            </div>
+            <span class="system-status">SYNCHRONIZED</span>
+          </div>
+
+          <!-- Hero Metric: Per Person -->
+          <div class="hero-metric" style="margin-top: 20px;">
+            <div class="hero-label">Amount Per Person</div>
+            <div id="displayPerPerson" class="hero-value">$0.00</div>
+            <div id="displayPerPersonSubtext" class="hero-subtext">Includes $0.00 bill + $0.00 tip</div>
+          </div>
+
+          <!-- Secondary Metrics -->
+          <div class="breakdown-list" style="margin-top: 20px;">
+            <div class="breakdown-row">
+              <span class="breakdown-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Base Bill Amount
+              </span>
+              <span id="displayBaseBill" class="breakdown-value">$0.00</span>
+            </div>
+
+            <div class="breakdown-row accent-tip">
+              <span class="breakdown-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                Tip Total (<span id="displayEffectiveTipRate">20.0%</span>)
+              </span>
+              <span id="displayTipTotal" class="breakdown-value">$0.00</span>
+            </div>
+
+            <div class="breakdown-row accent-total">
+              <span class="breakdown-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Grand Total Bill
+              </span>
+              <span id="displayGrandTotal" class="breakdown-value">$0.00</span>
+            </div>
+
+            <div class="breakdown-row">
+              <span class="breakdown-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                Split Among
+              </span>
+              <span id="displaySplitPersons" class="breakdown-value">1 Person</span>
+            </div>
+
+            <div class="breakdown-row">
+              <span class="breakdown-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Tip Share Per Person
+              </span>
+              <span id="displayTipPerPerson" class="breakdown-value">$0.00</span>
+            </div>
+          </div>
+
+          <!-- Rounding Delta Notice -->
+          <div class="rounding-delta-container" id="roundingDeltaBox" style="margin-top: 14px;">
+            <span class="delta-text" id="deltaLabel">Rounding adjustment:</span>
+            <span class="delta-badge" id="deltaBadge">+$0.00 extra to tip</span>
+          </div>
+
+          <!-- Collapsible Roster Breakdown -->
+          <div class="roster-card" id="rosterCard">
+            <div class="roster-header" id="rosterToggle">
+              <span>Individual Shares Breakdown</span>
+              <span id="rosterToggleIcon">▼</span>
+            </div>
+            <div class="roster-content" id="rosterList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="hud-actions">
+          <button id="btnCopy" class="btn-action-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy Summary
+          </button>
+          <button id="btnClear" class="btn-action-secondary">
+            Clear
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <span>APEX ENGINE v2.4</span>
+      <span class="sep">//</span>
+      <span>REACTIVE REAL-TIME COMPUTATION</span>
+      <span class="sep">//</span>
+      <span>OFFLINE SECURE CLIENT RUNTIME</span>
+    </footer>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+    <span id="toastMessage">Summary copied to clipboard!</span>
+  </div>
+
+  <script>
+    // State management
+    const state = {
+      bill: 0,
+      tipPercent: 20,
+      people: 1,
+      roundMode: 'exact', // 'exact' | 'person' | 'total'
+      currency: '$'
+    };
+
+    // DOM Elements
+    const billInput = document.getElementById('billInput');
+    const tipPresetBtns = document.querySelectorAll('.tip-preset-btn');
+    const tipRangeSlider = document.getElementById('tipRangeSlider');
+    const tipCustomInput = document.getElementById('tipCustomInput');
+    const tipPercentageReadout = document.getElementById('tipPercentageReadout');
+    const peopleRangeSlider = document.getElementById('peopleRangeSlider');
+    const peopleInput = document.getElementById('peopleInput');
+    const peopleReadout = document.getElementById('peopleReadout');
+    const peopleIndicator = document.getElementById('peopleIndicator');
+    const btnPersonMinus = document.getElementById('btnPersonMinus');
+    const btnPersonPlus = document.getElementById('btnPersonPlus');
+    const roundCards = document.querySelectorAll('.round-card');
+    const roundingStatusBadge = document.getElementById('roundingStatusBadge');
+    const currencySelect = document.getElementById('currencySelect');
+    const currencySymbolLarge = document.getElementById('currencySymbolLarge');
+    const btnReset = document.getElementById('btnReset');
+    const btnClear = document.getElementById('btnClear');
+    const btnCopy = document.getElementById('btnCopy');
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+
+    // Result Display Elements
+    const displayPerPerson = document.getElementById('displayPerPerson');
+    const displayPerPersonSubtext = document.getElementById('displayPerPersonSubtext');
+    const displayBaseBill = document.getElementById('displayBaseBill');
+    const displayTipTotal = document.getElementById('displayTipTotal');
+    const displayEffectiveTipRate = document.getElementById('displayEffectiveTipRate');
+    const displayGrandTotal = document.getElementById('displayGrandTotal');
+    const displaySplitPersons = document.getElementById('displaySplitPersons');
+    const displayTipPerPerson = document.getElementById('displayTipPerPerson');
+    const roundingDeltaBox = document.getElementById('roundingDeltaBox');
+    const deltaLabel = document.getElementById('deltaLabel');
+    const deltaBadge = document.getElementById('deltaBadge');
+    const rosterList = document.getElementById('rosterList');
+    const rosterToggle = document.getElementById('rosterToggle');
+    const rosterToggleIcon = document.getElementById('rosterToggleIcon');
+
+    // Quick chip buttons
+    document.querySelectorAll('.chip-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = parseFloat(btn.dataset.bill);
+        billInput.value = val.toFixed(2);
+        state.bill = val;
+        recalculate();
+      });
+    });
+
+    // Format currency helper
+    function fmt(amount) {
+      if (isNaN(amount) || amount === null || amount === undefined) amount = 0;
+      return state.currency + amount.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    // Main calculation engine
+    function calculate() {
+      const bill = Math.max(0, state.bill || 0);
+      const tipPercent = Math.max(0, state.tipPercent || 0);
+      const people = Math.max(1, parseInt(state.people, 10) || 1);
+
+      // Raw unrounded calculations
+      const rawTipAmount = bill * (tipPercent / 100);
+      const rawGrandTotal = bill + rawTipAmount;
+      const rawPerPersonTotal = rawGrandTotal / people;
+      const rawPerPersonTip = rawTipAmount / people;
+      const rawPerPersonBill = bill / people;
+
+      let finalPerPerson = rawPerPersonTotal;
+      let finalGrandTotal = rawGrandTotal;
+      let finalTipAmount = rawTipAmount;
+      let roundingDelta = 0;
+
+      if (bill > 0) {
+        if (state.roundMode === 'person') {
+          // Round each person's total up to nearest whole dollar
+          // e.g., $24.15 -> $25.00
+          finalPerPerson = Math.ceil(rawPerPersonTotal);
+          // Total becomes per person * people
+          finalGrandTotal = finalPerPerson * people;
+          finalTipAmount = finalGrandTotal - bill;
+          roundingDelta = finalGrandTotal - rawGrandTotal;
+        } else if (state.roundMode === 'total') {
+          // Round grand total up to nearest whole dollar
+          // e.g., $97.40 -> $98.00
+          finalGrandTotal = Math.ceil(rawGrandTotal);
+          finalTipAmount = finalGrandTotal - bill;
+          finalPerPerson = finalGrandTotal / people;
+          roundingDelta = finalGrandTotal - rawGrandTotal;
+        } else {
+          // Exact mode: Standard cent rounding
+          finalPerPerson = rawPerPersonTotal;
+          finalGrandTotal = rawGrandTotal;
+          finalTipAmount = rawTipAmount;
+          roundingDelta = 0;
+        }
+      } else {
+        finalPerPerson = 0;
+        finalGrandTotal = 0;
+        finalTipAmount = 0;
+        roundingDelta = 0;
+      }
+
+      const effectiveTipRate = bill > 0 ? ((finalTipAmount / bill) * 100) : tipPercent;
+      const finalPerPersonTip = people > 0 ? (finalTipAmount / people) : 0;
+      const finalPerPersonBill = people > 0 ? (bill / people) : 0;
+
+      return {
+        bill,
+        tipPercent,
+        people,
+        finalPerPerson,
+        finalGrandTotal,
+        finalTipAmount,
+        finalPerPersonTip,
+        finalPerPersonBill,
+        effectiveTipRate,
+        roundingDelta
+      };
+    }
+
+    // Update UI
+    function recalculate() {
+      const res = calculate();
+
+      // Display Hero
+      displayPerPerson.textContent = fmt(res.finalPerPerson);
+      displayPerPersonSubtext.textContent = `Includes ${fmt(res.finalPerPersonBill)} bill + ${fmt(res.finalPerPersonTip)} tip`;
+
+      // Display Secondary
+      displayBaseBill.textContent = fmt(res.bill);
+      displayTipTotal.textContent = fmt(res.finalTipAmount);
+      displayEffectiveTipRate.textContent = `${res.effectiveTipRate.toFixed(1)}%`;
+      displayGrandTotal.textContent = fmt(res.finalGrandTotal);
+      displaySplitPersons.textContent = `${res.people} ${res.people === 1 ? 'Person' : 'People'}`;
+      displayTipPerPerson.textContent = fmt(res.finalPerPersonTip);
+
+      // Rounding Delta Box
+      if (state.roundMode === 'exact') {
+        roundingDeltaBox.style.display = 'none';
+      } else {
+        roundingDeltaBox.style.display = 'flex';
+        if (res.roundingDelta > 0.001) {
+          deltaLabel.textContent = state.roundMode === 'person' 
+            ? 'Rounded up per person:' 
+            : 'Rounded up total:';
+          deltaBadge.textContent = `+${fmt(res.roundingDelta)} added to tip`;
+          deltaBadge.style.color = 'var(--emerald-accent)';
+        } else {
+          deltaLabel.textContent = 'Already whole dollar:';
+          deltaBadge.textContent = '+$0.00 (No extra needed)';
+          deltaBadge.style.color = 'var(--text-dim)';
+        }
+      }
+
+      // Update Roster Breakdown
+      updateRoster(res);
+    }
+
+    // Populate dynamic split roster
+    function updateRoster(res) {
+      rosterList.innerHTML = '';
+      const count = res.people;
+
+      for (let i = 1; i <= count; i++) {
+        const item = document.createElement('div');
+        item.className = 'roster-item';
+        item.innerHTML = `
+          <div class="roster-item-name">Person ${i}</div>
+          <div class="roster-item-amount">${fmt(res.finalPerPerson)}</div>
+        `;
+        rosterList.appendChild(item);
+      }
+    }
+
+    // Update Indicator Dots
+    function updateDots(num) {
+      peopleIndicator.innerHTML = '';
+      const displayCount = Math.min(num, 30);
+      for (let i = 0; i < displayCount; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'person-dot';
+        peopleIndicator.appendChild(dot);
+      }
+      if (num > 30) {
+        const more = document.createElement('span');
+        more.style.fontSize = '0.65rem';
+        more.style.color = 'var(--text-dim)';
+        more.textContent = `+${num - 30} more`;
+        peopleIndicator.appendChild(more);
+      }
+    }
+
+    // Event Handlers: Bill Input
+    billInput.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      state.bill = isNaN(val) ? 0 : val;
+      recalculate();
+    });
+
+    // Event Handlers: Tip Presets
+    tipPresetBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tipPresetBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const tip = parseFloat(btn.dataset.tip);
+        state.tipPercent = tip;
+        tipRangeSlider.value = tip;
+        tipCustomInput.value = tip;
+        tipPercentageReadout.textContent = `${tip}% SELECTED`;
+        recalculate();
+      });
+    });
+
+    // Event Handlers: Tip Slider & Custom Input
+    tipRangeSlider.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      state.tipPercent = val;
+      tipCustomInput.value = val;
+      tipPercentageReadout.textContent = `${val}% SELECTED`;
+
+      tipPresetBtns.forEach(b => {
+        if (parseFloat(b.dataset.tip) === val) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+      recalculate();
+    });
+
+    tipCustomInput.addEventListener('input', (e) => {
+      let val = parseFloat(e.target.value);
+      if (isNaN(val)) val = 0;
+      if (val < 0) val = 0;
+      state.tipPercent = val;
+      tipRangeSlider.value = Math.min(val, 50);
+      tipPercentageReadout.textContent = `${val}% CUSTOM`;
+
+      tipPresetBtns.forEach(b => {
+        if (parseFloat(b.dataset.tip) === val) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+      recalculate();
+    });
+
+    // Event Handlers: People Split
+    function setPeople(count) {
+      count = Math.max(1, Math.min(100, count));
+      state.people = count;
+      peopleInput.value = count;
+      peopleRangeSlider.value = Math.min(count, 20);
+      peopleReadout.textContent = count === 1 ? '1 PERSON (SOLO)' : `${count} PEOPLE SPLIT`;
+      updateDots(count);
+      recalculate();
+    }
+
+    peopleRangeSlider.addEventListener('input', (e) => {
+      setPeople(parseInt(e.target.value, 10));
+    });
+
+    peopleInput.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      if (!isNaN(val)) {
+        setPeople(val);
+      }
+    });
+
+    btnPersonMinus.addEventListener('click', () => {
+      setPeople(state.people - 1);
+    });
+
+    btnPersonPlus.addEventListener('click', () => {
+      setPeople(state.people + 1);
+    });
+
+    // Event Handlers: Rounding Cards
+    roundCards.forEach(card => {
+      card.addEventListener('click', () => {
+        roundCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        state.roundMode = card.dataset.round;
+
+        if (state.roundMode === 'exact') {
+          roundingStatusBadge.textContent = 'EXACT (NO ROUND)';
+        } else if (state.roundMode === 'person') {
+          roundingStatusBadge.textContent = 'ROUNDED / PERSON ($)';
+        } else if (state.roundMode === 'total') {
+          roundingStatusBadge.textContent = 'ROUNDED TOTAL ($)';
+        }
+        recalculate();
+      });
+    });
+
+    // Currency Switcher
+    currencySelect.addEventListener('change', (e) => {
+      state.currency = e.target.value;
+      currencySymbolLarge.textContent = state.currency;
+      document.querySelectorAll('.chip-btn').forEach(b => {
+        b.textContent = `${state.currency}${b.dataset.bill}.00`;
+      });
+      recalculate();
+    });
+
+    // Reset / Clear
+    function resetAll() {
+      billInput.value = '';
+      state.bill = 0;
+      setPeople(1);
+
+      // Default tip to 20%
+      state.tipPercent = 20;
+      tipRangeSlider.value = 20;
+      tipCustomInput.value = 20;
+      tipPercentageReadout.textContent = '20% SELECTED';
+      tipPresetBtns.forEach(b => {
+        if (b.dataset.tip === '20') b.classList.add('active');
+        else b.classList.remove('active');
+      });
+
+      // Default rounding to exact
+      state.roundMode = 'exact';
+      roundCards.forEach(c => {
+        if (c.dataset.round === 'exact') c.classList.add('active');
+        else c.classList.remove('active');
+      });
+      roundingStatusBadge.textContent = 'EXACT (NO ROUND)';
+
+      recalculate();
+      showToast('Calculator reset to default parameters');
+    }
+
+    btnReset.addEventListener('click', resetAll);
+    btnClear.addEventListener('click', resetAll);
+
+    // Copy Summary to Clipboard
+    btnCopy.addEventListener('click', () => {
+      const res = calculate();
+      if (res.bill <= 0) {
+        showToast('Enter a bill amount to copy summary');
+        return;
+      }
+
+      const text = [
+        `==============================`,
+        `      BILL & GRATUITY RECEIPT `,
+        `==============================`,
+        `Base Bill:       ${fmt(res.bill)}`,
+        `Tip Rate:        ${res.effectiveTipRate.toFixed(1)}% (${fmt(res.finalTipAmount)})`,
+        `Rounding Mode:   ${state.roundMode.toUpperCase()}`,
+        res.roundingDelta > 0 ? `Rounding Added:  +${fmt(res.roundingDelta)}` : null,
+        `Grand Total:     ${fmt(res.finalGrandTotal)}`,
+        `Split Among:     ${res.people} ${res.people === 1 ? 'person' : 'people'}`,
+        `------------------------------`,
+        `EACH PAYS:       ${fmt(res.finalPerPerson)}`,
+        `==============================`
+      ].filter(Boolean).join('\n');
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Receipt breakdown copied to clipboard!');
+      }).catch(() => {
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('Receipt breakdown copied to clipboard!');
+      });
+    });
+
+    // Toast function
+    let toastTimeout;
+    function showToast(msg) {
+      toastMessage.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Toggle Roster Accordion
+    let rosterOpen = true;
+    rosterToggle.addEventListener('click', () => {
+      rosterOpen = !rosterOpen;
+      rosterList.style.display = rosterOpen ? 'grid' : 'none';
+      rosterToggleIcon.textContent = rosterOpen ? '▼' : '►';
+    });
+
+    // Initial calculation run
+    recalculate();
+  </script>
+</body>
+</html>
