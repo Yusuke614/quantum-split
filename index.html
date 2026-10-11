@@ -392,6 +392,49 @@
       align-items: center;
     }
 
+    .tip-stepper-box {
+      display: flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 2px 4px;
+      gap: 6px;
+      transition: var(--transition-smooth);
+    }
+
+    .tip-stepper-box:focus-within {
+      border-color: var(--cyan-primary);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .tip-stepper-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      user-select: none;
+    }
+
+    .tip-stepper-btn:hover {
+      background: rgba(56, 189, 248, 0.25);
+      color: var(--cyan-primary);
+      border-color: var(--border-highlight);
+    }
+
+    .tip-stepper-btn:active {
+      transform: scale(0.95);
+    }
+
     .slider-val-tag {
       font-family: var(--font-mono);
       font-size: 1rem;
@@ -1106,9 +1149,13 @@
           <div class="slider-box">
             <div class="slider-header">
               <span style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase;">Fine-Tune Slider</span>
-              <div class="slider-val-tag">
-                <input type="number" id="tipCustomInput" class="custom-input-stepper" min="0" max="100" value="20" step="1">
-                <span>%</span>
+              <div class="tip-stepper-box">
+                <button id="btnTipMinus" class="tip-stepper-btn" type="button" title="Decrease Tip by 1%">−</button>
+                <div class="slider-val-tag">
+                  <input type="number" id="tipCustomInput" class="custom-input-stepper" min="0" max="100" value="20" step="1">
+                  <span>%</span>
+                </div>
+                <button id="btnTipPlus" class="tip-stepper-btn" type="button" title="Increase Tip by 1%">+</button>
               </div>
             </div>
             <input type="range" id="tipRangeSlider" class="range-input" min="0" max="50" value="20" step="1">
@@ -1322,6 +1369,8 @@
     const tipPresetBtns = document.querySelectorAll('.tip-preset-btn');
     const tipRangeSlider = document.getElementById('tipRangeSlider');
     const tipCustomInput = document.getElementById('tipCustomInput');
+    const btnTipMinus = document.getElementById('btnTipMinus');
+    const btnTipPlus = document.getElementById('btnTipPlus');
     const tipPercentageReadout = document.getElementById('tipPercentageReadout');
     const peopleRangeSlider = document.getElementById('peopleRangeSlider');
     const peopleInput = document.getElementById('peopleInput');
@@ -1519,54 +1568,51 @@
       recalculate();
     });
 
+    // Helper: Unified Tip Rate Updater
+    function setTipPercent(tip) {
+      tip = Math.max(0, Math.min(100, Math.round(tip * 10) / 10));
+      state.tipPercent = tip;
+      tipRangeSlider.value = Math.min(tip, 50);
+      tipCustomInput.value = tip;
+
+      let matchedPreset = false;
+      tipPresetBtns.forEach(b => {
+        if (parseFloat(b.dataset.tip) === tip) {
+          b.classList.add('active');
+          matchedPreset = true;
+        } else {
+          b.classList.remove('active');
+        }
+      });
+
+      tipPercentageReadout.textContent = matchedPreset ? `${tip}% SELECTED` : `${tip}% CUSTOM`;
+      recalculate();
+    }
+
     // Event Handlers: Tip Presets
     tipPresetBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        tipPresetBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const tip = parseFloat(btn.dataset.tip);
-        state.tipPercent = tip;
-        tipRangeSlider.value = tip;
-        tipCustomInput.value = tip;
-        tipPercentageReadout.textContent = `${tip}% SELECTED`;
-        recalculate();
+        setTipPercent(parseFloat(btn.dataset.tip));
       });
+    });
+
+    // Event Handlers: Tip Steppers (+/-)
+    btnTipMinus.addEventListener('click', () => {
+      setTipPercent(state.tipPercent - 1);
+    });
+
+    btnTipPlus.addEventListener('click', () => {
+      setTipPercent(state.tipPercent + 1);
     });
 
     // Event Handlers: Tip Slider & Custom Input
     tipRangeSlider.addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value);
-      state.tipPercent = val;
-      tipCustomInput.value = val;
-      tipPercentageReadout.textContent = `${val}% SELECTED`;
-
-      tipPresetBtns.forEach(b => {
-        if (parseFloat(b.dataset.tip) === val) {
-          b.classList.add('active');
-        } else {
-          b.classList.remove('active');
-        }
-      });
-      recalculate();
+      setTipPercent(parseFloat(e.target.value));
     });
 
     tipCustomInput.addEventListener('input', (e) => {
       let val = parseFloat(e.target.value);
-      if (isNaN(val)) val = 0;
-      if (val < 0) val = 0;
-      state.tipPercent = val;
-      tipRangeSlider.value = Math.min(val, 50);
-      tipPercentageReadout.textContent = `${val}% CUSTOM`;
-
-      tipPresetBtns.forEach(b => {
-        if (parseFloat(b.dataset.tip) === val) {
-          b.classList.add('active');
-        } else {
-          b.classList.remove('active');
-        }
-      });
-      recalculate();
+      setTipPercent(isNaN(val) ? 0 : val);
     });
 
     // Event Handlers: People Split
@@ -1634,7 +1680,7 @@
       setPeople(1);
 
       // Default tip to 20%
-      state.tipPercent = 20;
+      setTipPercent(20);
       tipRangeSlider.value = 20;
       tipCustomInput.value = 20;
       tipPercentageReadout.textContent = '20% SELECTED';
