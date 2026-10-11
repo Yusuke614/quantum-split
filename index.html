@@ -7,17 +7,19 @@
   <style>
     :root {
       --bg-base: #060911;
-      --bg-surface: rgba(13, 20, 36, 0.72);
-      --bg-surface-elevated: rgba(20, 32, 58, 0.85);
+      --bg-surface: rgba(13, 20, 36, 0.75);
+      --bg-surface-elevated: rgba(20, 32, 58, 0.88);
       --bg-card: rgba(15, 23, 42, 0.65);
       --border-subtle: rgba(56, 189, 248, 0.15);
       --border-highlight: rgba(56, 189, 248, 0.45);
       --border-glow: rgba(56, 189, 248, 0.8);
-      --cyan-primary: #00f0ff;
-      --cyan-glow: rgba(0, 240, 255, 0.25);
-      --cyan-muted: #38bdf8;
+      --theme-accent: #00f0ff;
+      --theme-glow: rgba(0, 240, 255, 0.25);
+      --theme-muted: #38bdf8;
       --emerald-accent: #10b981;
       --emerald-glow: rgba(16, 185, 129, 0.25);
+      --amber-accent: #f59e0b;
+      --purple-accent: #a855f7;
       --text-main: #f1f5f9;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
@@ -30,6 +32,29 @@
       --transition-smooth: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* Dynamic Accent Themes */
+    body.theme-emerald {
+      --theme-accent: #10b981;
+      --theme-glow: rgba(16, 185, 129, 0.25);
+      --theme-muted: #34d399;
+      --border-subtle: rgba(16, 185, 129, 0.18);
+      --border-highlight: rgba(16, 185, 129, 0.5);
+    }
+    body.theme-amber {
+      --theme-accent: #f59e0b;
+      --theme-glow: rgba(245, 158, 11, 0.25);
+      --theme-muted: #fbbf24;
+      --border-subtle: rgba(245, 158, 11, 0.18);
+      --border-highlight: rgba(245, 158, 11, 0.5);
+    }
+    body.theme-purple {
+      --theme-accent: #a855f7;
+      --theme-glow: rgba(168, 85, 247, 0.25);
+      --theme-muted: #c084fc;
+      --border-subtle: rgba(168, 85, 247, 0.18);
+      --border-highlight: rgba(168, 85, 247, 0.5);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -40,7 +65,7 @@
     body {
       background-color: var(--bg-base);
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 15% 15%, var(--theme-glow) 0%, transparent 40%),
         radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
         linear-gradient(to bottom, rgba(6, 9, 17, 0.85), var(--bg-base)),
         radial-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px);
@@ -55,9 +80,9 @@
       padding: 32px 16px;
       position: relative;
       overflow-x: hidden;
+      transition: background 0.3s ease;
     }
 
-    /* Ambient cyber grid scanline overlay */
     body::before {
       content: "";
       position: fixed;
@@ -71,7 +96,7 @@
 
     .app-container {
       width: 100%;
-      max-width: 1100px;
+      max-width: 1120px;
       position: relative;
       z-index: 2;
       display: flex;
@@ -107,8 +132,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--cyan-primary);
-      box-shadow: 0 0 15px var(--cyan-glow);
+      color: var(--theme-accent);
+      box-shadow: 0 0 15px var(--theme-glow);
+      transition: var(--transition-smooth);
     }
 
     .brand-title h1 {
@@ -128,7 +154,7 @@
       border-radius: 4px;
       background: rgba(0, 240, 255, 0.12);
       border: 1px solid var(--border-highlight);
-      color: var(--cyan-primary);
+      color: var(--theme-accent);
       font-family: var(--font-mono);
       font-weight: 600;
       letter-spacing: 0.5px;
@@ -143,13 +169,13 @@
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .currency-selector {
       background: rgba(15, 23, 42, 0.8);
       border: 1px solid var(--border-subtle);
-      color: var(--cyan-primary);
+      color: var(--theme-accent);
       font-family: var(--font-mono);
       font-size: 0.85rem;
       font-weight: 600;
@@ -161,8 +187,8 @@
     }
 
     .currency-selector:hover, .currency-selector:focus {
-      border-color: var(--cyan-primary);
-      box-shadow: 0 0 12px var(--cyan-glow);
+      border-color: var(--theme-accent);
+      box-shadow: 0 0 12px var(--theme-glow);
     }
 
     .btn-icon {
@@ -180,16 +206,16 @@
     }
 
     .btn-icon:hover {
-      color: var(--cyan-primary);
+      color: var(--theme-accent);
       border-color: var(--border-highlight);
-      box-shadow: 0 0 12px var(--cyan-glow);
+      box-shadow: 0 0 12px var(--theme-glow);
       transform: translateY(-1px);
     }
 
     /* Main Grid Layout */
     .calculator-grid {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: 1.18fr 0.82fr;
       gap: 24px;
     }
 
@@ -205,10 +231,10 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-xl);
-      padding: 28px;
+      padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 26px;
+      gap: 20px;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
       position: relative;
     }
@@ -223,6 +249,74 @@
       background: linear-gradient(90deg, transparent, var(--border-highlight), transparent);
     }
 
+    /* Navigation Tab Bar */
+    .panel-tabs {
+      display: flex;
+      gap: 8px;
+      background: rgba(6, 11, 23, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 5px;
+    }
+
+    .panel-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition-smooth);
+    }
+
+    .panel-tab-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .panel-tab-btn.active {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(15, 23, 42, 0.9));
+      border-color: var(--theme-accent);
+      color: var(--theme-accent);
+      box-shadow: 0 0 14px var(--theme-glow);
+    }
+
+    .tab-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid var(--border-highlight);
+      padding: 1px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Tab Panes */
+    .tab-pane {
+      display: none;
+      flex-direction: column;
+      gap: 22px;
+      animation: fadeIn 0.22s ease-in-out;
+    }
+
+    .tab-pane.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .section-header {
       display: flex;
       justify-content: space-between;
@@ -235,7 +329,7 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 1.2px;
-      color: var(--cyan-muted);
+      color: var(--theme-muted);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -260,7 +354,7 @@
       font-size: 2rem;
       font-family: var(--font-mono);
       font-weight: 600;
-      color: var(--cyan-primary);
+      color: var(--theme-accent);
       pointer-events: none;
       transition: var(--transition-smooth);
     }
@@ -281,8 +375,8 @@
     }
 
     .bill-input:focus {
-      border-color: var(--cyan-primary);
-      box-shadow: 0 0 20px var(--cyan-glow), inset 0 2px 8px rgba(0, 0, 0, 0.6);
+      border-color: var(--theme-accent);
+      box-shadow: 0 0 20px var(--theme-glow), inset 0 2px 8px rgba(0, 0, 0, 0.6);
     }
 
     .bill-input::placeholder {
@@ -357,21 +451,21 @@
     }
 
     .tip-preset-btn:hover {
-      border-color: var(--cyan-muted);
+      border-color: var(--theme-muted);
       background: rgba(15, 25, 48, 0.9);
       transform: translateY(-2px);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
     .tip-preset-btn.active {
-      border-color: var(--cyan-primary);
+      border-color: var(--theme-accent);
       background: linear-gradient(180deg, rgba(0, 240, 255, 0.15) 0%, rgba(10, 22, 45, 0.9) 100%);
-      color: var(--cyan-primary);
-      box-shadow: 0 0 16px var(--cyan-glow), inset 0 0 12px rgba(0, 240, 255, 0.1);
+      color: var(--theme-accent);
+      box-shadow: 0 0 16px var(--theme-glow), inset 0 0 12px rgba(0, 240, 255, 0.1);
     }
 
     .tip-preset-btn.active span.label-sub {
-      color: var(--cyan-muted);
+      color: var(--theme-muted);
     }
 
     /* Slider Container */
@@ -404,8 +498,8 @@
     }
 
     .tip-stepper-box:focus-within {
-      border-color: var(--cyan-primary);
-      box-shadow: 0 0 10px var(--cyan-glow);
+      border-color: var(--theme-accent);
+      box-shadow: 0 0 10px var(--theme-glow);
     }
 
     .tip-stepper-btn {
@@ -427,7 +521,7 @@
 
     .tip-stepper-btn:hover {
       background: rgba(56, 189, 248, 0.25);
-      color: var(--cyan-primary);
+      color: var(--theme-accent);
       border-color: var(--border-highlight);
     }
 
@@ -439,18 +533,18 @@
       font-family: var(--font-mono);
       font-size: 1rem;
       font-weight: 700;
-      color: var(--cyan-primary);
+      color: var(--theme-accent);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .custom-input-stepper {
-      width: 68px;
+      width: 60px;
       background: rgba(15, 23, 42, 0.9);
       border: 1px solid var(--border-subtle);
       border-radius: 6px;
-      padding: 4px 8px;
+      padding: 4px 6px;
       color: #ffffff;
       font-family: var(--font-mono);
       font-size: 0.95rem;
@@ -461,8 +555,8 @@
     }
 
     .custom-input-stepper:focus {
-      border-color: var(--cyan-primary);
-      box-shadow: 0 0 8px var(--cyan-glow);
+      border-color: var(--theme-accent);
+      box-shadow: 0 0 8px var(--theme-glow);
     }
 
     /* Range Slider Styling */
@@ -485,15 +579,15 @@
       height: 20px;
       border-radius: 50%;
       background: #ffffff;
-      border: 3px solid var(--cyan-primary);
+      border: 3px solid var(--theme-accent);
       cursor: pointer;
-      box-shadow: 0 0 12px var(--cyan-primary);
+      box-shadow: 0 0 12px var(--theme-accent);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
     .range-input::-webkit-slider-thumb:hover {
       transform: scale(1.15);
-      box-shadow: 0 0 18px var(--cyan-primary);
+      box-shadow: 0 0 18px var(--theme-accent);
     }
 
     .range-input::-moz-range-thumb {
@@ -501,9 +595,9 @@
       height: 20px;
       border-radius: 50%;
       background: #ffffff;
-      border: 3px solid var(--cyan-primary);
+      border: 3px solid var(--theme-accent);
       cursor: pointer;
-      box-shadow: 0 0 12px var(--cyan-primary);
+      box-shadow: 0 0 12px var(--theme-accent);
     }
 
     /* Split Section */
@@ -548,7 +642,7 @@
 
     .stepper-btn:hover {
       background: rgba(56, 189, 248, 0.2);
-      color: var(--cyan-primary);
+      color: var(--theme-accent);
       border-color: var(--border-highlight);
     }
 
@@ -576,8 +670,8 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--cyan-muted);
-      box-shadow: 0 0 6px var(--cyan-glow);
+      background: var(--theme-muted);
+      box-shadow: 0 0 6px var(--theme-glow);
       transition: var(--transition-smooth);
       animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
@@ -587,6 +681,83 @@
       to { transform: scale(1); opacity: 1; }
     }
 
+    /* Active Mode Quick Banner on Calculator Tab */
+    .active-mode-banner {
+      background: rgba(6, 11, 23, 0.7);
+      border: 1px dashed var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .active-mode-banner:hover {
+      border-color: var(--theme-accent);
+      background: rgba(15, 23, 42, 0.8);
+      box-shadow: 0 0 12px var(--theme-glow);
+    }
+
+    .mode-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .mode-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-dim);
+    }
+
+    .mode-val {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--theme-accent);
+      font-family: var(--font-mono);
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: var(--theme-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition-smooth);
+    }
+
+    .active-mode-banner:hover .btn-link {
+      color: #ffffff;
+      transform: translateX(2px);
+    }
+
+    /* Settings Tab Styles */
+    .settings-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .settings-group-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--theme-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 6px;
+    }
+
     /* Rounding Mode Section */
     .rounding-options {
       display: grid;
@@ -594,7 +765,7 @@
       gap: 10px;
     }
 
-    @media (max-width: 550px) {
+    @media (max-width: 600px) {
       .rounding-options {
         grid-template-columns: 1fr;
       }
@@ -604,7 +775,7 @@
       background: rgba(10, 16, 31, 0.85);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 12px 10px;
+      padding: 14px 12px;
       cursor: pointer;
       transition: var(--transition-smooth);
       display: flex;
@@ -632,7 +803,7 @@
     }
 
     .round-card-title {
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 700;
       color: #ffffff;
       letter-spacing: 0.3px;
@@ -659,7 +830,7 @@
     .round-card-desc {
       font-size: 0.72rem;
       color: var(--text-muted);
-      line-height: 1.3;
+      line-height: 1.35;
     }
 
     .round-status-badge {
@@ -668,6 +839,104 @@
       color: var(--emerald-accent);
       margin-top: 4px;
       font-weight: 600;
+    }
+
+    /* Settings Form Rows */
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 16, 31, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      gap: 14px;
+    }
+
+    .setting-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .setting-title {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .setting-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: .25s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .25s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--theme-accent);
+      border-color: var(--theme-accent);
+      box-shadow: 0 0 10px var(--theme-glow);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+      background-color: #060911;
+    }
+
+    /* Theme Swatches */
+    .theme-swatches {
+      display: flex;
+      gap: 8px;
+    }
+
+    .theme-swatch {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .theme-swatch.active {
+      border-color: #ffffff;
+      transform: scale(1.15);
+      box-shadow: 0 0 10px currentColor;
     }
 
     /* Right HUD Result Panel */
@@ -693,7 +962,7 @@
       right: -50%;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle, rgba(0, 240, 255, 0.08) 0%, transparent 60%);
+      background: radial-gradient(circle, var(--theme-glow) 0%, transparent 60%);
       pointer-events: none;
     }
 
@@ -710,7 +979,7 @@
       font-family: var(--font-mono);
       font-weight: 700;
       letter-spacing: 1.5px;
-      color: var(--cyan-muted);
+      color: var(--theme-muted);
       text-transform: uppercase;
       display: flex;
       align-items: center;
@@ -721,8 +990,8 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--cyan-primary);
-      box-shadow: 0 0 8px var(--cyan-primary);
+      background: var(--theme-accent);
+      box-shadow: 0 0 8px var(--theme-accent);
       animation: pulseAnim 2s infinite;
     }
 
@@ -751,7 +1020,7 @@
       text-align: center;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.08);
+      box-shadow: 0 0 25px var(--theme-glow);
     }
 
     .hero-metric::after {
@@ -761,7 +1030,7 @@
       left: 0;
       right: 0;
       height: 2px;
-      background: linear-gradient(90deg, transparent, var(--cyan-primary), transparent);
+      background: linear-gradient(90deg, transparent, var(--theme-accent), transparent);
     }
 
     .hero-label {
@@ -769,7 +1038,7 @@
       font-weight: 600;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: var(--cyan-muted);
+      color: var(--theme-muted);
       margin-bottom: 6px;
     }
 
@@ -778,7 +1047,7 @@
       font-family: var(--font-mono);
       font-weight: 800;
       color: #ffffff;
-      text-shadow: 0 0 25px var(--cyan-glow);
+      text-shadow: 0 0 25px var(--theme-glow);
       line-height: 1.1;
       margin-bottom: 8px;
       letter-spacing: -1px;
@@ -810,7 +1079,7 @@
 
     .breakdown-row:hover {
       background: rgba(15, 23, 42, 0.8);
-      border-color: rgba(56, 189, 248, 0.2);
+      border-color: var(--border-subtle);
     }
 
     .breakdown-label {
@@ -822,7 +1091,7 @@
     }
 
     .breakdown-label svg {
-      color: var(--cyan-muted);
+      color: var(--theme-muted);
       width: 14px;
       height: 14px;
     }
@@ -840,7 +1109,7 @@
     }
 
     .breakdown-row.accent-total .breakdown-value {
-      color: var(--cyan-primary);
+      color: var(--theme-accent);
       font-size: 1.2rem;
     }
 
@@ -851,7 +1120,7 @@
     /* Audit & Rounding Delta Tag */
     .rounding-delta-container {
       background: rgba(6, 11, 23, 0.6);
-      border: 1px dashed rgba(56, 189, 248, 0.2);
+      border: 1px dashed var(--border-subtle);
       border-radius: var(--radius-sm);
       padding: 10px 14px;
       display: flex;
@@ -882,7 +1151,7 @@
     .btn-action-primary {
       flex: 1;
       background: linear-gradient(135deg, #0ea5e9, #0284c7);
-      border: 1px solid var(--cyan-primary);
+      border: 1px solid var(--theme-accent);
       color: #ffffff;
       padding: 14px 18px;
       border-radius: var(--radius-md);
@@ -933,8 +1202,8 @@
       bottom: 24px;
       right: 24px;
       background: rgba(15, 23, 42, 0.95);
-      border: 1px solid var(--cyan-primary);
-      box-shadow: 0 10px 30px rgba(0, 240, 255, 0.25);
+      border: 1px solid var(--theme-accent);
+      box-shadow: 0 10px 30px var(--theme-glow);
       backdrop-filter: blur(16px);
       padding: 12px 20px;
       border-radius: var(--radius-md);
@@ -955,7 +1224,7 @@
       opacity: 1;
     }
 
-    /* Per-person Visual Roster Dropdown / Modal */
+    /* Per-person Visual Roster */
     .roster-card {
       margin-top: 14px;
       background: rgba(6, 11, 23, 0.6);
@@ -972,7 +1241,7 @@
       font-size: 0.76rem;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: var(--cyan-muted);
+      color: var(--theme-muted);
       font-weight: 600;
     }
 
@@ -1070,6 +1339,12 @@
           <option value="A$">AUD ($)</option>
           <option value="CHF">CHF (₣)</option>
         </select>
+        <button id="btnHeaderSettings" class="btn-icon" title="Toggle Settings Tab">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
         <button id="btnReset" class="btn-icon" title="Reset All Values">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
@@ -1081,161 +1356,296 @@
 
     <!-- Main Content Grid -->
     <div class="calculator-grid">
-      <!-- Input Control Panel -->
+      <!-- Input & Navigation Panel -->
       <section class="panel">
-        <!-- 1. Bill Input -->
-        <div class="control-group">
-          <div class="section-header">
-            <span class="section-label">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="1" x2="12" y2="23"/>
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-              </svg>
-              Base Bill Amount
-            </span>
-            <span class="section-badge">PRIMARY INPUT</span>
-          </div>
-          <div class="bill-input-wrapper">
-            <span id="currencySymbolLarge" class="currency-symbol-large">$</span>
-            <input type="number" id="billInput" class="bill-input" placeholder="0.00" min="0" step="0.01" autofocus>
-          </div>
-          <div class="bill-quick-chips">
-            <button class="chip-btn" data-bill="25">$25.00</button>
-            <button class="chip-btn" data-bill="50">$50.00</button>
-            <button class="chip-btn" data-bill="75">$75.00</button>
-            <button class="chip-btn" data-bill="100">$100.00</button>
-            <button class="chip-btn" data-bill="150">$150.00</button>
-            <button class="chip-btn" data-bill="200">$200.00</button>
-          </div>
+        <!-- Navigation Tab Switcher -->
+        <div class="panel-tabs">
+          <button id="tabBtnCalc" class="panel-tab-btn active" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            Calculator
+          </button>
+          <button id="tabBtnSettings" class="panel-tab-btn" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            Settings
+            <span class="tab-badge" id="tabRoundingBadge">EXACT</span>
+          </button>
         </div>
 
-        <!-- 2. Adjustable Tip Percentage -->
-        <div class="control-group">
-          <div class="section-header">
-            <span class="section-label">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-              </svg>
-              Gratuity / Tip Rate
-            </span>
-            <span class="section-badge" id="tipPercentageReadout">20% SELECTED</span>
+        <!-- TAB 1: CALCULATOR VIEW -->
+        <div id="paneCalculator" class="tab-pane active">
+          <!-- 1. Bill Input -->
+          <div class="control-group">
+            <div class="section-header">
+              <span class="section-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="23"/>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                Base Bill Amount
+              </span>
+              <span class="section-badge">PRIMARY INPUT</span>
+            </div>
+            <div class="bill-input-wrapper">
+              <span id="currencySymbolLarge" class="currency-symbol-large">$</span>
+              <input type="number" id="billInput" class="bill-input" placeholder="0.00" min="0" step="0.01" autofocus>
+            </div>
+            <div class="bill-quick-chips">
+              <button class="chip-btn" data-bill="25">$25.00</button>
+              <button class="chip-btn" data-bill="50">$50.00</button>
+              <button class="chip-btn" data-bill="75">$75.00</button>
+              <button class="chip-btn" data-bill="100">$100.00</button>
+              <button class="chip-btn" data-bill="150">$150.00</button>
+              <button class="chip-btn" data-bill="200">$200.00</button>
+            </div>
           </div>
 
-          <div class="tip-presets">
-            <button class="tip-preset-btn" data-tip="10">
-              10%
-              <span class="label-sub">Standard</span>
-            </button>
-            <button class="tip-preset-btn" data-tip="15">
-              15%
-              <span class="label-sub">Good</span>
-            </button>
-            <button class="tip-preset-btn" data-tip="18">
-              18%
-              <span class="label-sub">Great</span>
-            </button>
-            <button class="tip-preset-btn active" data-tip="20">
-              20%
-              <span class="label-sub">Generous</span>
-            </button>
-            <button class="tip-preset-btn" data-tip="25">
-              25%
-              <span class="label-sub">Superior</span>
-            </button>
-          </div>
+          <!-- 2. Adjustable Tip Percentage -->
+          <div class="control-group">
+            <div class="section-header">
+              <span class="section-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                Gratuity / Tip Rate
+              </span>
+              <span class="section-badge" id="tipPercentageReadout">20% SELECTED</span>
+            </div>
 
-          <div class="slider-box">
-            <div class="slider-header">
-              <span style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase;">Fine-Tune Slider</span>
-              <div class="tip-stepper-box">
-                <button id="btnTipMinus" class="tip-stepper-btn" type="button" title="Decrease Tip by 1%">−</button>
-                <div class="slider-val-tag">
-                  <input type="number" id="tipCustomInput" class="custom-input-stepper" min="0" max="100" value="20" step="1">
-                  <span>%</span>
+            <div class="tip-presets" id="tipPresetsContainer">
+              <button class="tip-preset-btn" data-tip="10">
+                10%
+                <span class="label-sub">Standard</span>
+              </button>
+              <button class="tip-preset-btn" data-tip="15">
+                15%
+                <span class="label-sub">Good</span>
+              </button>
+              <button class="tip-preset-btn" data-tip="18">
+                18%
+                <span class="label-sub">Great</span>
+              </button>
+              <button class="tip-preset-btn active" data-tip="20">
+                20%
+                <span class="label-sub">Generous</span>
+              </button>
+              <button class="tip-preset-btn" data-tip="25">
+                25%
+                <span class="label-sub">Superior</span>
+              </button>
+            </div>
+
+            <div class="slider-box">
+              <div class="slider-header">
+                <span style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase;">Fine-Tune Rate</span>
+                <div class="tip-stepper-box">
+                  <button id="btnTipMinus" class="tip-stepper-btn" type="button" title="Decrease Tip by 1%">−</button>
+                  <div class="slider-val-tag">
+                    <input type="number" id="tipCustomInput" class="custom-input-stepper" min="0" max="100" value="20" step="1">
+                    <span>%</span>
+                  </div>
+                  <button id="btnTipPlus" class="tip-stepper-btn" type="button" title="Increase Tip by 1%">+</button>
                 </div>
-                <button id="btnTipPlus" class="tip-stepper-btn" type="button" title="Increase Tip by 1%">+</button>
+              </div>
+              <input type="range" id="tipRangeSlider" class="range-input" min="0" max="50" value="20" step="1">
+            </div>
+          </div>
+
+          <!-- 3. Split Between People -->
+          <div class="control-group">
+            <div class="section-header">
+              <span class="section-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                Split Group Size
+              </span>
+              <span class="section-badge" id="peopleReadout">1 PERSON (SOLO)</span>
+            </div>
+
+            <div class="split-control-grid">
+              <div class="split-slider-wrap">
+                <input type="range" id="peopleRangeSlider" class="range-input" min="1" max="20" value="1" step="1">
+                <div id="peopleIndicator" class="people-indicator">
+                  <div class="person-dot"></div>
+                </div>
+              </div>
+
+              <div class="split-stepper-box">
+                <button id="btnPersonMinus" class="stepper-btn" title="Decrease Person">−</button>
+                <input type="number" id="peopleInput" class="people-count-display" value="1" min="1" max="100">
+                <button id="btnPersonPlus" class="stepper-btn" title="Increase Person">+</button>
               </div>
             </div>
-            <input type="range" id="tipRangeSlider" class="range-input" min="0" max="50" value="20" step="1">
+          </div>
+
+          <!-- Quick Rounding Mode Status Banner -->
+          <div class="active-mode-banner" id="bannerRoundingShortcut" title="Configure Rounding in Settings">
+            <div class="mode-info">
+              <span class="mode-label">Active Calculation Mode</span>
+              <span class="mode-val" id="bannerRoundingText">Exact Cents (No Rounding)</span>
+            </div>
+            <button class="btn-link" type="button">Edit in Settings →</button>
           </div>
         </div>
 
-        <!-- 3. Split Between People -->
-        <div class="control-group">
-          <div class="section-header">
-            <span class="section-label">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-              Split Group Size
-            </span>
-            <span class="section-badge" id="peopleReadout">1 PERSON (SOLO)</span>
-          </div>
-
-          <div class="split-control-grid">
-            <div class="split-slider-wrap">
-              <input type="range" id="peopleRangeSlider" class="range-input" min="1" max="20" value="1" step="1">
-              <div id="peopleIndicator" class="people-indicator">
-                <div class="person-dot"></div>
-              </div>
-            </div>
-
-            <div class="split-stepper-box">
-              <button id="btnPersonMinus" class="stepper-btn" title="Decrease Person">−</button>
-              <input type="number" id="peopleInput" class="people-count-display" value="1" min="1" max="100">
-              <button id="btnPersonPlus" class="stepper-btn" title="Increase Person">+</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. Rounding Options -->
-        <div class="control-group">
-          <div class="section-header">
-            <span class="section-label">
+        <!-- TAB 2: SETTINGS VIEW -->
+        <div id="paneSettings" class="tab-pane">
+          <!-- 1. Precision & Rounding Logic -->
+          <div class="settings-group">
+            <div class="settings-group-title">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"/>
                 <polyline points="12 6 12 12 16 14"/>
               </svg>
-              Precision & Rounding Logic
-            </span>
-            <span class="section-badge" id="roundingStatusBadge">EXACT (NO ROUND)</span>
+              Tip Calculation & Rounding Mode
+            </div>
+
+            <div class="rounding-options">
+              <!-- Mode 1: Exact -->
+              <div class="round-card active" data-round="exact">
+                <div class="round-card-header">
+                  <span class="round-card-title">Exact Cents</span>
+                  <div class="round-indicator-dot"></div>
+                </div>
+                <p class="round-card-desc">Exact mathematical calculation to the penny without alteration.</p>
+                <span class="round-status-badge">Default Precision</span>
+              </div>
+
+              <!-- Mode 2: Round Up Per Person -->
+              <div class="round-card" data-round="person">
+                <div class="round-card-header">
+                  <span class="round-card-title">Round Up / Person</span>
+                  <div class="round-indicator-dot"></div>
+                </div>
+                <p class="round-card-desc">Rounds each individual's portion up to the next whole dollar.</p>
+                <span class="round-status-badge">Clean Split</span>
+              </div>
+
+              <!-- Mode 3: Round Up Total Bill -->
+              <div class="round-card" data-round="total">
+                <div class="round-card-header">
+                  <span class="round-card-title">Round Up Total</span>
+                  <div class="round-indicator-dot"></div>
+                </div>
+                <p class="round-card-desc">Rounds the entire combined bill up to the next whole dollar.</p>
+                <span class="round-status-badge">Cash Friendly</span>
+              </div>
+            </div>
           </div>
 
-          <div class="rounding-options">
-            <!-- Mode 1: Exact -->
-            <div class="round-card active" data-round="exact">
-              <div class="round-card-header">
-                <span class="round-card-title">Exact Cents</span>
-                <div class="round-indicator-dot"></div>
-              </div>
-              <p class="round-card-desc">Exact mathematical calculation to the penny.</p>
-              <span class="round-status-badge">Default Precision</span>
+          <!-- 2. Global Currency & Formatting -->
+          <div class="settings-group">
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+              Currency Configuration
             </div>
 
-            <!-- Mode 2: Round Up Per Person -->
-            <div class="round-card" data-round="person">
-              <div class="round-card-header">
-                <span class="round-card-title">Round Up / Person</span>
-                <div class="round-indicator-dot"></div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-title">Active Currency Symbol</span>
+                <span class="setting-desc">Sets the monetary denomination across all calculations</span>
               </div>
-              <p class="round-card-desc">Rounds each individual's total up to next whole dollar.</p>
-              <span class="round-status-badge">Clean Split</span>
+              <select id="settingsCurrencySelect" class="currency-selector" title="Select Currency">
+                <option value="$" selected>USD ($)</option>
+                <option value="€">EUR (€)</option>
+                <option value="£">GBP (£)</option>
+                <option value="¥">JPY (¥)</option>
+                <option value="CA$">CAD ($)</option>
+                <option value="A$">AUD ($)</option>
+                <option value="CHF">CHF (₣)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 3. Receipt Export Customization -->
+          <div class="settings-group">
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              Receipt & Clipboard Output
             </div>
 
-            <!-- Mode 3: Round Up Total Bill -->
-            <div class="round-card" data-round="total">
-              <div class="round-card-header">
-                <span class="round-card-title">Round Up Total</span>
-                <div class="round-indicator-dot"></div>
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-title">Include Individual Party Roster</span>
+                <span class="setting-desc">Appends each person's exact share to the copied receipt</span>
               </div>
-              <p class="round-card-desc">Rounds entire combined bill up to next whole dollar.</p>
-              <span class="round-status-badge">Cash Friendly</span>
+              <label class="switch">
+                <input type="checkbox" id="settingIncludeRoster" checked>
+                <span class="slider"></span>
+              </label>
             </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-title">Include Rounding Delta Breakdown</span>
+                <span class="setting-desc">Lists extra rounding contributions added to the tip</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="settingIncludeDelta" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 4. UI Theme & Audio Feedback -->
+          <div class="settings-group">
+            <div class="settings-group-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+              Telemetry & High-Tech Accents
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-title">Accent Cyber Glow</span>
+                <span class="setting-desc">Personalize holographic interface highlights</span>
+              </div>
+              <div class="theme-swatches">
+                <div class="theme-swatch active" data-theme="cyan" style="background: #00f0ff;" title="Cyber Cyan"></div>
+                <div class="theme-swatch" data-theme="emerald" style="background: #10b981;" title="Matrix Emerald"></div>
+                <div class="theme-swatch" data-theme="amber" style="background: #f59e0b;" title="Solar Amber"></div>
+                <div class="theme-swatch" data-theme="purple" style="background: #a855f7;" title="Void Violet"></div>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-title">Audio Interaction Telemetry</span>
+                <span class="setting-desc">Synthesized micro-feedback on stepper adjustments</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="settingAudioFeedback">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 5. Reset Settings -->
+          <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+            <button id="btnResetSettings" class="btn-action-secondary" style="padding: 10px 16px; font-size: 0.8rem;" type="button">
+              Restore Default Settings
+            </button>
           </div>
         </div>
       </section>
@@ -1337,9 +1747,9 @@
 
     <!-- Footer -->
     <footer>
-      <span>APEX ENGINE v2.4</span>
+      <span>APEX ENGINE v3.0</span>
       <span class="sep">//</span>
-      <span>REACTIVE REAL-TIME COMPUTATION</span>
+      <span>MODULAR SETTINGS MATRIX</span>
       <span class="sep">//</span>
       <span>OFFLINE SECURE CLIENT RUNTIME</span>
     </footer>
@@ -1347,7 +1757,7 @@
 
   <!-- Toast Notification -->
   <div id="toast" class="toast">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
       <polyline points="22 4 12 14.01 9 11.01"/>
     </svg>
@@ -1361,10 +1771,44 @@
       tipPercent: 20,
       people: 1,
       roundMode: 'exact', // 'exact' | 'person' | 'total'
-      currency: '$'
+      currency: '$',
+      includeRosterInReceipt: true,
+      includeDeltaInReceipt: true,
+      audioFeedback: false,
+      theme: 'cyan'
     };
 
-    // DOM Elements
+    // Web Audio Synthesizer for High-Tech Clicks
+    let audioCtx = null;
+    function playBeep(freq = 600, duration = 0.04) {
+      if (!state.audioFeedback) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    // DOM Elements: Tabs
+    const tabBtnCalc = document.getElementById('tabBtnCalc');
+    const tabBtnSettings = document.getElementById('tabBtnSettings');
+    const paneCalculator = document.getElementById('paneCalculator');
+    const paneSettings = document.getElementById('paneSettings');
+    const tabRoundingBadge = document.getElementById('tabRoundingBadge');
+    const bannerRoundingShortcut = document.getElementById('bannerRoundingShortcut');
+    const bannerRoundingText = document.getElementById('bannerRoundingText');
+    const btnHeaderSettings = document.getElementById('btnHeaderSettings');
+
+    // DOM Elements: Calculator Inputs
     const billInput = document.getElementById('billInput');
     const tipPresetBtns = document.querySelectorAll('.tip-preset-btn');
     const tipRangeSlider = document.getElementById('tipRangeSlider');
@@ -1378,10 +1822,19 @@
     const peopleIndicator = document.getElementById('peopleIndicator');
     const btnPersonMinus = document.getElementById('btnPersonMinus');
     const btnPersonPlus = document.getElementById('btnPersonPlus');
+
+    // DOM Elements: Settings Controls
     const roundCards = document.querySelectorAll('.round-card');
-    const roundingStatusBadge = document.getElementById('roundingStatusBadge');
     const currencySelect = document.getElementById('currencySelect');
+    const settingsCurrencySelect = document.getElementById('settingsCurrencySelect');
     const currencySymbolLarge = document.getElementById('currencySymbolLarge');
+    const settingIncludeRoster = document.getElementById('settingIncludeRoster');
+    const settingIncludeDelta = document.getElementById('settingIncludeDelta');
+    const settingAudioFeedback = document.getElementById('settingAudioFeedback');
+    const themeSwatches = document.querySelectorAll('.theme-swatch');
+    const btnResetSettings = document.getElementById('btnResetSettings');
+
+    // DOM Elements: Global Actions & Telemetry
     const btnReset = document.getElementById('btnReset');
     const btnClear = document.getElementById('btnClear');
     const btnCopy = document.getElementById('btnCopy');
@@ -1404,9 +1857,34 @@
     const rosterToggle = document.getElementById('rosterToggle');
     const rosterToggleIcon = document.getElementById('rosterToggleIcon');
 
+    // Tab Switching Logic
+    function switchTab(tab) {
+      if (tab === 'calc') {
+        tabBtnCalc.classList.add('active');
+        tabBtnSettings.classList.remove('active');
+        paneCalculator.classList.add('active');
+        paneSettings.classList.remove('active');
+      } else {
+        tabBtnSettings.classList.add('active');
+        tabBtnCalc.classList.remove('active');
+        paneSettings.classList.add('active');
+        paneCalculator.classList.remove('active');
+      }
+      playBeep(750, 0.05);
+    }
+
+    tabBtnCalc.addEventListener('click', () => switchTab('calc'));
+    tabBtnSettings.addEventListener('click', () => switchTab('settings'));
+    btnHeaderSettings.addEventListener('click', () => {
+      const isSettingsOpen = paneSettings.classList.contains('active');
+      switchTab(isSettingsOpen ? 'calc' : 'settings');
+    });
+    bannerRoundingShortcut.addEventListener('click', () => switchTab('settings'));
+
     // Quick chip buttons
     document.querySelectorAll('.chip-btn').forEach(btn => {
       btn.addEventListener('click', () => {
+        playBeep(650, 0.03);
         const val = parseFloat(btn.dataset.bill);
         billInput.value = val.toFixed(2);
         state.bill = val;
@@ -1429,7 +1907,6 @@
       const tipPercent = Math.max(0, state.tipPercent || 0);
       const people = Math.max(1, parseInt(state.people, 10) || 1);
 
-      // Raw unrounded calculations
       const rawTipAmount = bill * (tipPercent / 100);
       const rawGrandTotal = bill + rawTipAmount;
       const rawPerPersonTotal = rawGrandTotal / people;
@@ -1443,22 +1920,16 @@
 
       if (bill > 0) {
         if (state.roundMode === 'person') {
-          // Round each person's total up to nearest whole dollar
-          // e.g., $24.15 -> $25.00
           finalPerPerson = Math.ceil(rawPerPersonTotal);
-          // Total becomes per person * people
           finalGrandTotal = finalPerPerson * people;
           finalTipAmount = finalGrandTotal - bill;
           roundingDelta = finalGrandTotal - rawGrandTotal;
         } else if (state.roundMode === 'total') {
-          // Round grand total up to nearest whole dollar
-          // e.g., $97.40 -> $98.00
           finalGrandTotal = Math.ceil(rawGrandTotal);
           finalTipAmount = finalGrandTotal - bill;
           finalPerPerson = finalGrandTotal / people;
           roundingDelta = finalGrandTotal - rawGrandTotal;
         } else {
-          // Exact mode: Standard cent rounding
           finalPerPerson = rawPerPersonTotal;
           finalGrandTotal = rawGrandTotal;
           finalTipAmount = rawTipAmount;
@@ -1505,11 +1976,21 @@
       displaySplitPersons.textContent = `${res.people} ${res.people === 1 ? 'Person' : 'People'}`;
       displayTipPerPerson.textContent = fmt(res.finalPerPersonTip);
 
-      // Rounding Delta Box
+      // Rounding Badges & Delta Box
       if (state.roundMode === 'exact') {
         roundingDeltaBox.style.display = 'none';
+        tabRoundingBadge.textContent = 'EXACT';
+        bannerRoundingText.textContent = 'Exact Cents (No Rounding)';
       } else {
         roundingDeltaBox.style.display = 'flex';
+        if (state.roundMode === 'person') {
+          tabRoundingBadge.textContent = 'ROUND / PERSON';
+          bannerRoundingText.textContent = 'Round Up to Nearest Dollar / Person';
+        } else {
+          tabRoundingBadge.textContent = 'ROUND TOTAL';
+          bannerRoundingText.textContent = 'Round Up Grand Total to Nearest Dollar';
+        }
+
         if (res.roundingDelta > 0.001) {
           deltaLabel.textContent = state.roundMode === 'person' 
             ? 'Rounded up per person:' 
@@ -1518,12 +1999,11 @@
           deltaBadge.style.color = 'var(--emerald-accent)';
         } else {
           deltaLabel.textContent = 'Already whole dollar:';
-          deltaBadge.textContent = '+$0.00 (No extra needed)';
+          deltaBadge.textContent = '+0.00 (No extra needed)';
           deltaBadge.style.color = 'var(--text-dim)';
         }
       }
 
-      // Update Roster Breakdown
       updateRoster(res);
     }
 
@@ -1561,14 +2041,7 @@
       }
     }
 
-    // Event Handlers: Bill Input
-    billInput.addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value);
-      state.bill = isNaN(val) ? 0 : val;
-      recalculate();
-    });
-
-    // Helper: Unified Tip Rate Updater
+    // Unified Tip Rate Updater
     function setTipPercent(tip) {
       tip = Math.max(0, Math.min(100, Math.round(tip * 10) / 10));
       state.tipPercent = tip;
@@ -1589,33 +2062,43 @@
       recalculate();
     }
 
-    // Event Handlers: Tip Presets
+    // Bill Input Listener
+    billInput.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      state.bill = isNaN(val) ? 0 : val;
+      recalculate();
+    });
+
+    // Tip Presets Listener
     tipPresetBtns.forEach(btn => {
       btn.addEventListener('click', () => {
+        playBeep(600, 0.03);
         setTipPercent(parseFloat(btn.dataset.tip));
       });
     });
 
-    // Event Handlers: Tip Steppers (+/-)
+    // Tip Steppers (+/-) Listener
     btnTipMinus.addEventListener('click', () => {
+      playBeep(520, 0.03);
       setTipPercent(state.tipPercent - 1);
     });
 
     btnTipPlus.addEventListener('click', () => {
+      playBeep(720, 0.03);
       setTipPercent(state.tipPercent + 1);
     });
 
-    // Event Handlers: Tip Slider & Custom Input
+    // Tip Slider & Custom Input Listeners
     tipRangeSlider.addEventListener('input', (e) => {
       setTipPercent(parseFloat(e.target.value));
     });
 
     tipCustomInput.addEventListener('input', (e) => {
-      let val = parseFloat(e.target.value);
+      const val = parseFloat(e.target.value);
       setTipPercent(isNaN(val) ? 0 : val);
     });
 
-    // Event Handlers: People Split
+    // People Count Helpers & Listeners
     function setPeople(count) {
       count = Math.max(1, Math.min(100, count));
       state.people = count;
@@ -1632,73 +2115,123 @@
 
     peopleInput.addEventListener('input', (e) => {
       const val = parseInt(e.target.value, 10);
-      if (!isNaN(val)) {
-        setPeople(val);
-      }
+      if (!isNaN(val)) setPeople(val);
     });
 
     btnPersonMinus.addEventListener('click', () => {
+      playBeep(500, 0.03);
       setPeople(state.people - 1);
     });
 
     btnPersonPlus.addEventListener('click', () => {
+      playBeep(700, 0.03);
       setPeople(state.people + 1);
     });
 
-    // Event Handlers: Rounding Cards
+    // Rounding Card Selection (In Settings Tab)
     roundCards.forEach(card => {
       card.addEventListener('click', () => {
+        playBeep(650, 0.04);
         roundCards.forEach(c => c.classList.remove('active'));
         card.classList.add('active');
         state.roundMode = card.dataset.round;
-
-        if (state.roundMode === 'exact') {
-          roundingStatusBadge.textContent = 'EXACT (NO ROUND)';
-        } else if (state.roundMode === 'person') {
-          roundingStatusBadge.textContent = 'ROUNDED / PERSON ($)';
-        } else if (state.roundMode === 'total') {
-          roundingStatusBadge.textContent = 'ROUNDED TOTAL ($)';
-        }
         recalculate();
+        showToast(`Rounding mode set to: ${card.querySelector('.round-card-title').textContent}`);
       });
     });
 
-    // Currency Switcher
-    currencySelect.addEventListener('change', (e) => {
-      state.currency = e.target.value;
-      currencySymbolLarge.textContent = state.currency;
+    // Currency Switcher Sync
+    function setCurrency(curr) {
+      state.currency = curr;
+      currencySelect.value = curr;
+      settingsCurrencySelect.value = curr;
+      currencySymbolLarge.textContent = curr;
       document.querySelectorAll('.chip-btn').forEach(b => {
-        b.textContent = `${state.currency}${b.dataset.bill}.00`;
+        b.textContent = `${curr}${b.dataset.bill}.00`;
       });
       recalculate();
+    }
+
+    currencySelect.addEventListener('change', (e) => {
+      playBeep(600, 0.03);
+      setCurrency(e.target.value);
     });
 
-    // Reset / Clear
-    function resetAll() {
-      billInput.value = '';
-      state.bill = 0;
-      setPeople(1);
+    settingsCurrencySelect.addEventListener('change', (e) => {
+      playBeep(600, 0.03);
+      setCurrency(e.target.value);
+    });
 
-      // Default tip to 20%
-      setTipPercent(20);
-      tipRangeSlider.value = 20;
-      tipCustomInput.value = 20;
-      tipPercentageReadout.textContent = '20% SELECTED';
-      tipPresetBtns.forEach(b => {
-        if (b.dataset.tip === '20') b.classList.add('active');
-        else b.classList.remove('active');
+    // Receipt Export Toggles
+    settingIncludeRoster.addEventListener('change', (e) => {
+      state.includeRosterInReceipt = e.target.checked;
+      playBeep(600, 0.03);
+    });
+
+    settingIncludeDelta.addEventListener('change', (e) => {
+      state.includeDeltaInReceipt = e.target.checked;
+      playBeep(600, 0.03);
+    });
+
+    // Audio Feedback Toggle
+    settingAudioFeedback.addEventListener('change', (e) => {
+      state.audioFeedback = e.target.checked;
+      if (state.audioFeedback) playBeep(880, 0.08);
+    });
+
+    // Theme Swatches
+    themeSwatches.forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        themeSwatches.forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+        const theme = swatch.dataset.theme;
+        state.theme = theme;
+        document.body.className = theme === 'cyan' ? '' : `theme-${theme}`;
+        playBeep(800, 0.05);
+        showToast(`Applied ${swatch.title} theme`);
       });
+    });
 
-      // Default rounding to exact
+    // Restore Settings Defaults
+    btnResetSettings.addEventListener('click', () => {
+      playBeep(450, 0.08);
+      // Reset rounding mode to exact
       state.roundMode = 'exact';
       roundCards.forEach(c => {
         if (c.dataset.round === 'exact') c.classList.add('active');
         else c.classList.remove('active');
       });
-      roundingStatusBadge.textContent = 'EXACT (NO ROUND)';
+
+      // Reset currency
+      setCurrency('$');
+
+      // Reset toggles
+      settingIncludeRoster.checked = true;
+      state.includeRosterInReceipt = true;
+      settingIncludeDelta.checked = true;
+      state.includeDeltaInReceipt = true;
+      settingAudioFeedback.checked = false;
+      state.audioFeedback = false;
+
+      // Reset theme
+      themeSwatches.forEach(s => s.classList.remove('active'));
+      document.querySelector('.theme-swatch[data-theme="cyan"]').classList.add('active');
+      state.theme = 'cyan';
+      document.body.className = '';
 
       recalculate();
-      showToast('Calculator reset to default parameters');
+      showToast('Settings restored to defaults');
+    });
+
+    // Global Reset / Clear
+    function resetAll() {
+      playBeep(400, 0.08);
+      billInput.value = '';
+      state.bill = 0;
+      setPeople(1);
+      setTipPercent(20);
+      recalculate();
+      showToast('Calculator cleared');
     }
 
     btnReset.addEventListener('click', resetAll);
@@ -1706,31 +2239,42 @@
 
     // Copy Summary to Clipboard
     btnCopy.addEventListener('click', () => {
+      playBeep(850, 0.06);
       const res = calculate();
       if (res.bill <= 0) {
         showToast('Enter a bill amount to copy summary');
         return;
       }
 
-      const text = [
+      const lines = [
         `==============================`,
         `      BILL & GRATUITY RECEIPT `,
         `==============================`,
         `Base Bill:       ${fmt(res.bill)}`,
         `Tip Rate:        ${res.effectiveTipRate.toFixed(1)}% (${fmt(res.finalTipAmount)})`,
         `Rounding Mode:   ${state.roundMode.toUpperCase()}`,
-        res.roundingDelta > 0 ? `Rounding Added:  +${fmt(res.roundingDelta)}` : null,
+        (state.includeDeltaInReceipt && res.roundingDelta > 0) ? `Rounding Added:  +${fmt(res.roundingDelta)}` : null,
         `Grand Total:     ${fmt(res.finalGrandTotal)}`,
         `Split Among:     ${res.people} ${res.people === 1 ? 'person' : 'people'}`,
         `------------------------------`,
-        `EACH PAYS:       ${fmt(res.finalPerPerson)}`,
-        `==============================`
-      ].filter(Boolean).join('\n');
+        `EACH PAYS:       ${fmt(res.finalPerPerson)}`
+      ];
+
+      if (state.includeRosterInReceipt && res.people > 1) {
+        lines.push(`------------------------------`);
+        lines.push(`ITEMIZED SHARES:`);
+        for (let i = 1; i <= res.people; i++) {
+          lines.push(`  Person ${i}:       ${fmt(res.finalPerPerson)}`);
+        }
+      }
+
+      lines.push(`==============================`);
+
+      const text = lines.filter(Boolean).join('\n');
 
       navigator.clipboard.writeText(text).then(() => {
         showToast('Receipt breakdown copied to clipboard!');
       }).catch(() => {
-        // Fallback
         const textarea = document.createElement('textarea');
         textarea.value = text;
         document.body.appendChild(textarea);
@@ -1741,7 +2285,7 @@
       });
     });
 
-    // Toast function
+    // Toast Notification helper
     let toastTimeout;
     function showToast(msg) {
       toastMessage.textContent = msg;
@@ -1755,12 +2299,13 @@
     // Toggle Roster Accordion
     let rosterOpen = true;
     rosterToggle.addEventListener('click', () => {
+      playBeep(500, 0.02);
       rosterOpen = !rosterOpen;
       rosterList.style.display = rosterOpen ? 'grid' : 'none';
       rosterToggleIcon.textContent = rosterOpen ? '▼' : '►';
     });
 
-    // Initial calculation run
+    // Initial run
     recalculate();
   </script>
 </body>

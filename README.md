@@ -1,6 +1,6 @@
 # quantum-split
 
-> A high-precision, real-time gratuity engine and bill-splitting web application designed with a sleek, high-tech interface and adaptive rounding controls.
+> A high-precision, real-time gratuity engine and bill-splitting web application designed with a sleek, high-tech interface, dedicated modular settings, and adaptive rounding controls.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub Pages](https://img.shields.io/badge/Deployment-GitHub%20Pages-00f0ff.svg)](#-live-web-application)
@@ -20,12 +20,13 @@ Access the live web application hosted on GitHub Pages:
 ## ✨ Key Features
 
 ### ⚡ Real-Time Gratuity & Bill Telemetry
-* **Live Reactive Math**: Instantly updates all metrics on every keystroke or slider interaction.
+* **Live Reactive Math**: Instantly updates all metrics on every keystroke, slider drag, or stepper click.
 * **Dual Breakdown**: Displays both combined totals (Base Bill, Tip Total, Grand Total) and individual shares (Per-Person Bill, Per-Person Tip, Per-Person Total).
 * **Effective Tip Auditing**: Dynamically calculates and displays the true tip percentage after any rounding adjustments are applied.
 
 ### 🎛️ Adaptive Tip Controls
 * **Quick Presets**: Instant selection chips for `10%` (Standard), `15%` (Good), `18%` (Great), `20%` (Generous), and `25%` (Superior).
+* **Dual Stepper Controls (`−` / `+`)**: Increment or decrement tip percentages in crisp 1% steps.
 * **Fine-Tuning Slider**: Smooth responsive slider ranging from `0%` to `50%`.
 * **Direct Numeric Input**: Supports exact custom percentages from `0%` to `100%`.
 * **Quick Bill Preset Chips**: Rapidly test or set bill amounts (`$25`, `$50`, `$75`, `$100`, `$150`, `$200`).
@@ -35,17 +36,23 @@ Access the live web application hosted on GitHub Pages:
 * **Party Size Visualizer**: Glowing cybernetic avatar dots provide immediate visual confirmation of party count.
 * **Individual Shares Roster**: Expandable breakdown drawer detailing the exact charge assigned to each person in the group.
 
-### 📐 Precision & Rounding Logic
-Choose between three distinct calculation modes to fit any dining scenario:
-1. **Exact Cents (Default Precision)**: Calculates down to the penny with exact mathematical accuracy.
-2. **Round Up / Person (Clean Split)**: Rounds each individual's portion up to the nearest whole dollar—ideal for avoiding loose change or split credit card transactions.
-3. **Round Up Total (Cash Friendly)**: Rounds the entire combined bill up to the nearest whole dollar while keeping splits proportional.
-4. **Rounding Delta Tag**: Automatically displays a live badge indicating the exact extra cents contributed to the tip due to rounding.
-
-### 🌍 Multi-Currency & Utility
-* **Global Currency Selector**: Toggle between USD (`$`), EUR (`€`), GBP (`£`), JPY (`¥`), CAD (`CA$`), AUD (`A$`), and CHF (`CHF`).
-* **One-Click Receipt Export**: Copy a clean, formatted ASCII text receipt breakdown directly to the clipboard with animated toast confirmation.
-* **Zero External Dependencies**: 100% self-contained vanilla HTML5, CSS3, and JavaScript—zero build steps, zero `node_modules`, and works completely offline.
+### ⚙️ Dedicated Settings & Configuration Tab
+A streamlined tab navigation separates real-time calculation from preference configuration:
+1. **Precision & Rounding Logic**:
+   * **Exact Cents (Default Precision)**: Calculates down to the penny with exact mathematical accuracy.
+   * **Round Up / Person (Clean Split)**: Rounds each individual's portion up to the nearest whole dollar—ideal for split credit card transactions.
+   * **Round Up Total (Cash Friendly)**: Rounds the entire combined bill up to the nearest whole dollar while keeping splits proportional.
+   * **Live Rounding Delta Tag**: Highlights the exact extra cents contributed to the tip due to rounding.
+2. **Global Currency Configuration**:
+   * Instantly switch between USD (`$`), EUR (`€`), GBP (`£`), JPY (`¥`), CAD (`CA$`), AUD (`A$`), and CHF (`CHF`).
+3. **Receipt & Export Preferences**:
+   * Toggle inclusion of the full itemized individual roster in the clipboard export.
+   * Toggle inclusion of the rounding audit breakdown in the clipboard export.
+4. **Holographic Themes & Audio Telemetry**:
+   * Four dynamic accent palettes: **Cyber Cyan** (`#00f0ff`), **Matrix Emerald** (`#10b981`), **Solar Amber** (`#f59e0b`), and **Void Violet** (`#a855f7`).
+   * Web Audio API sound effects toggle providing synthesized high-tech micro-feedback during interactions.
+5. **One-Click Defaults Restore**:
+   * Dedicated reset button inside settings to restore all calculation and UI preferences to default.
 
 ---
 
@@ -53,12 +60,13 @@ Choose between three distinct calculation modes to fit any dining scenario:
 
 * **Frontend**: Vanilla HTML5, CSS3, JavaScript (ES6+)
 * **Styling**:
-  * CSS Custom Properties (Theming)
+  * CSS Custom Properties (Dynamic Theming)
   * Glassmorphism (`backdrop-filter: blur(20px)`)
-  * Cybernetic obsidian & neon palette (`#00f0ff` cyan, `#10b981` emerald, `#0f172a` slate)
+  * Cybernetic obsidian & multi-accent glow palettes
   * Tabular monospace typography for numeric alignment
   * Fully responsive CSS Grid & Flexbox layouts (desktop & mobile optimized)
-* **Icons**: Inline scalable SVGs (no external icon fonts or CDN requests required)
+* **Audio**: Native Web Audio API (`AudioContext`, `OscillatorNode`) with zero external sound files.
+* **Icons**: Inline scalable SVGs (no external icon fonts or CDN requests required).
 
 ---
 
@@ -116,8 +124,8 @@ Then visit `http://localhost:8000` in your web browser.
 
 ```text
 quantum-split/
-├── index.html           # Main application entry point (single-file bundle)
-├── tip_calculator.html  # Standalone backup application bundle
+├── index.html           # Main application entry point (v3 with Settings tab)
+├── tip_calculator.html  # Standalone application bundle (v3 with Settings tab)
 ├── style.css            # Modular stylesheet
 ├── script.js            # Modular reactive logic
 └── README.md            # Project documentation and deployment guide
