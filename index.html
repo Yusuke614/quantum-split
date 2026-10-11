@@ -1747,9 +1747,9 @@
 
     <!-- Footer -->
     <footer>
-      <span>APEX ENGINE v3.0</span>
+      <span>APEX ENGINE v4.0</span>
       <span class="sep">//</span>
-      <span>MODULAR SETTINGS MATRIX</span>
+      <span>PERSISTENT CONFIGURATION MATRIX</span>
       <span class="sep">//</span>
       <span>OFFLINE SECURE CLIENT RUNTIME</span>
     </footer>
@@ -1765,6 +1765,27 @@
   </div>
 
   <script>
+    // Safe Storage Wrapper (handles private browsing, sandboxed iframes & file:// protocols)
+    const safeStorage = {
+      getItem: (key) => {
+        try {
+          return localStorage.getItem(key);
+        } catch (e) {
+          return null;
+        }
+      },
+      setItem: (key, val) => {
+        try {
+          localStorage.setItem(key, val);
+        } catch (e) {}
+      },
+      removeItem: (key) => {
+        try {
+          localStorage.removeItem(key);
+        } catch (e) {}
+      }
+    };
+
     // State management
     const state = {
       bill: 0,
@@ -2128,20 +2149,31 @@
       setPeople(state.people + 1);
     });
 
+    // Helper: Unified Rounding Mode Setter & Persister
+    function setRoundMode(mode, save = true) {
+      if (!['exact', 'person', 'total'].includes(mode)) mode = 'exact';
+      state.roundMode = mode;
+      roundCards.forEach(c => {
+        if (c.dataset.round === mode) c.classList.add('active');
+        else c.classList.remove('active');
+      });
+      if (save) {
+        safeStorage.setItem('apex_round_mode', mode);
+      }
+      recalculate();
+    }
+
     // Rounding Card Selection (In Settings Tab)
     roundCards.forEach(card => {
       card.addEventListener('click', () => {
         playBeep(650, 0.04);
-        roundCards.forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        state.roundMode = card.dataset.round;
-        recalculate();
-        showToast(`Rounding mode set to: ${card.querySelector('.round-card-title').textContent}`);
+        setRoundMode(card.dataset.round, true);
+        showToast(`Rounding mode set to: ${card.querySelector('.round-card-title').textContent} (saved)`);
       });
     });
 
-    // Currency Switcher Sync
-    function setCurrency(curr) {
+    // Currency Switcher Sync with Persistence
+    function setCurrency(curr, save = true) {
       state.currency = curr;
       currencySelect.value = curr;
       settingsCurrencySelect.value = curr;
@@ -2149,6 +2181,7 @@
       document.querySelectorAll('.chip-btn').forEach(b => {
         b.textContent = `${curr}${b.dataset.bill}.00`;
       });
+      if (save) safeStorage.setItem('apex_currency', curr);
       recalculate();
     }
 
@@ -2173,51 +2206,46 @@
       playBeep(600, 0.03);
     });
 
-    // Audio Feedback Toggle
+    // Audio Feedback Toggle with Persistence
     settingAudioFeedback.addEventListener('change', (e) => {
       state.audioFeedback = e.target.checked;
+      safeStorage.setItem('apex_audio', state.audioFeedback ? 'true' : 'false');
       if (state.audioFeedback) playBeep(880, 0.08);
     });
 
-    // Theme Swatches
+    // Theme Swatches with Persistence
+    function setTheme(theme, save = true) {
+      state.theme = theme;
+      themeSwatches.forEach(s => {
+        if (s.dataset.theme === theme) s.classList.add('active');
+        else s.classList.remove('active');
+      });
+      document.body.className = theme === 'cyan' ? '' : `theme-${theme}`;
+      if (save) safeStorage.setItem('apex_theme', theme);
+    }
+
     themeSwatches.forEach(swatch => {
       swatch.addEventListener('click', () => {
-        themeSwatches.forEach(s => s.classList.remove('active'));
-        swatch.classList.add('active');
-        const theme = swatch.dataset.theme;
-        state.theme = theme;
-        document.body.className = theme === 'cyan' ? '' : `theme-${theme}`;
+        setTheme(swatch.dataset.theme, true);
         playBeep(800, 0.05);
         showToast(`Applied ${swatch.title} theme`);
       });
     });
 
-    // Restore Settings Defaults
+    // Restore Settings Defaults & Clear Stored Preferences
     btnResetSettings.addEventListener('click', () => {
       playBeep(450, 0.08);
-      // Reset rounding mode to exact
-      state.roundMode = 'exact';
-      roundCards.forEach(c => {
-        if (c.dataset.round === 'exact') c.classList.add('active');
-        else c.classList.remove('active');
-      });
+      setRoundMode('exact', true);
+      setCurrency('$', true);
+      setTheme('cyan', true);
 
-      // Reset currency
-      setCurrency('$');
-
-      // Reset toggles
       settingIncludeRoster.checked = true;
       state.includeRosterInReceipt = true;
       settingIncludeDelta.checked = true;
       state.includeDeltaInReceipt = true;
       settingAudioFeedback.checked = false;
       state.audioFeedback = false;
-
-      // Reset theme
-      themeSwatches.forEach(s => s.classList.remove('active'));
-      document.querySelector('.theme-swatch[data-theme="cyan"]').classList.add('active');
-      state.theme = 'cyan';
-      document.body.className = '';
+      safeStorage.setItem('apex_audio', 'false');
 
       recalculate();
       showToast('Settings restored to defaults');
@@ -2304,6 +2332,30 @@
       rosterList.style.display = rosterOpen ? 'grid' : 'none';
       rosterToggleIcon.textContent = rosterOpen ? '▼' : '►';
     });
+
+    // Load and restore persisted settings across browsing sessions
+    const savedRoundMode = safeStorage.getItem('apex_round_mode');
+    if (savedRoundMode && ['exact', 'person', 'total'].includes(savedRoundMode)) {
+      setRoundMode(savedRoundMode, false);
+    } else {
+      setRoundMode('exact', false);
+    }
+
+    const savedCurrency = safeStorage.getItem('apex_currency');
+    if (savedCurrency) {
+      setCurrency(savedCurrency, false);
+    }
+
+    const savedTheme = safeStorage.getItem('apex_theme');
+    if (savedTheme) {
+      setTheme(savedTheme, false);
+    }
+
+    const savedAudio = safeStorage.getItem('apex_audio');
+    if (savedAudio !== null) {
+      state.audioFeedback = savedAudio === 'true';
+      settingAudioFeedback.checked = state.audioFeedback;
+    }
 
     // Initial run
     recalculate();

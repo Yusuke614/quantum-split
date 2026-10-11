@@ -43,15 +43,17 @@ A streamlined tab navigation separates real-time calculation from preference con
    * **Round Up / Person (Clean Split)**: Rounds each individual's portion up to the nearest whole dollar—ideal for split credit card transactions.
    * **Round Up Total (Cash Friendly)**: Rounds the entire combined bill up to the nearest whole dollar while keeping splits proportional.
    * **Live Rounding Delta Tag**: Highlights the exact extra cents contributed to the tip due to rounding.
-2. **Global Currency Configuration**:
+2. **Session Persistence**:
+   * Automatically remembers your selected **Tip Calculation & Rounding Mode**, currency denomination, and theme across browsing sessions via safe client-side `localStorage`.
+3. **Global Currency Configuration**:
    * Instantly switch between USD (`$`), EUR (`€`), GBP (`£`), JPY (`¥`), CAD (`CA$`), AUD (`A$`), and CHF (`CHF`).
-3. **Receipt & Export Preferences**:
+4. **Receipt & Export Preferences**:
    * Toggle inclusion of the full itemized individual roster in the clipboard export.
    * Toggle inclusion of the rounding audit breakdown in the clipboard export.
-4. **Holographic Themes & Audio Telemetry**:
+5. **Holographic Themes & Audio Telemetry**:
    * Four dynamic accent palettes: **Cyber Cyan** (`#00f0ff`), **Matrix Emerald** (`#10b981`), **Solar Amber** (`#f59e0b`), and **Void Violet** (`#a855f7`).
    * Web Audio API sound effects toggle providing synthesized high-tech micro-feedback during interactions.
-5. **One-Click Defaults Restore**:
+6. **One-Click Defaults Restore**:
    * Dedicated reset button inside settings to restore all calculation and UI preferences to default.
 
 ---
@@ -59,6 +61,7 @@ A streamlined tab navigation separates real-time calculation from preference con
 ## 🛠️ Tech Stack & Architecture
 
 * **Frontend**: Vanilla HTML5, CSS3, JavaScript (ES6+)
+* **Storage**: Client-side `localStorage` with `safeStorage` wrapper (sandboxed and `file://` resilient)
 * **Styling**:
   * CSS Custom Properties (Dynamic Theming)
   * Glassmorphism (`backdrop-filter: blur(20px)`)
@@ -124,8 +127,8 @@ Then visit `http://localhost:8000` in your web browser.
 
 ```text
 quantum-split/
-├── index.html           # Main application entry point (v3 with Settings tab)
-├── tip_calculator.html  # Standalone application bundle (v3 with Settings tab)
+├── index.html           # Main application entry point (v4 with session persistence)
+├── tip_calculator.html  # Standalone application bundle (v4 with session persistence)
 ├── style.css            # Modular stylesheet
 ├── script.js            # Modular reactive logic
 └── README.md            # Project documentation and deployment guide
