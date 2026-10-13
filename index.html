@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Apex Gratuity Engine // High-Tech Tip & Split Calculator</title>
   <style>
     :root {
       --bg-base: #060911;
-      --bg-surface: rgba(13, 20, 36, 0.75);
+      --bg-surface: rgba(13, 20, 36, 0.78);
       --bg-surface-elevated: rgba(20, 32, 58, 0.88);
       --bg-card: rgba(15, 23, 42, 0.65);
       --border-subtle: rgba(56, 189, 248, 0.15);
@@ -25,11 +25,11 @@
       --text-dim: #64748b;
       --radius-sm: 8px;
       --radius-md: 12px;
-      --radius-lg: 18px;
-      --radius-xl: 24px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
       --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       --font-mono: "SF Mono", "Cascadia Code", "Roboto Mono", "Fira Code", monospace;
-      --transition-smooth: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-smooth: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* Dynamic Accent Themes */
@@ -76,8 +76,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 32px 16px;
+      justify-content: flex-start;
+      padding: 24px 16px;
       position: relative;
       overflow-x: hidden;
       transition: background 0.3s ease;
@@ -90,7 +90,7 @@
       background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
       background-size: 100% 4px;
       pointer-events: none;
-      opacity: 0.25;
+      opacity: 0.2;
       z-index: 1;
     }
 
@@ -101,7 +101,7 @@
       z-index: 2;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 16px;
     }
 
     /* Header Bar */
@@ -109,23 +109,23 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 24px;
+      padding: 12px 20px;
       background: var(--bg-surface);
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
     .brand-icon {
-      width: 42px;
-      height: 42px;
+      width: 36px;
+      height: 36px;
       border-radius: var(--radius-md);
       background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(16, 185, 129, 0.2));
       border: 1px solid var(--border-highlight);
@@ -133,14 +133,14 @@
       align-items: center;
       justify-content: center;
       color: var(--theme-accent);
-      box-shadow: 0 0 15px var(--theme-glow);
-      transition: var(--transition-smooth);
+      box-shadow: 0 0 12px var(--theme-glow);
+      flex-shrink: 0;
     }
 
     .brand-title h1 {
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       font-weight: 700;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
       color: #ffffff;
       display: flex;
@@ -149,8 +149,8 @@
     }
 
     .brand-title h1 span.tag {
-      font-size: 0.65rem;
-      padding: 2px 7px;
+      font-size: 0.62rem;
+      padding: 2px 6px;
       border-radius: 4px;
       background: rgba(0, 240, 255, 0.12);
       border: 1px solid var(--border-highlight);
@@ -161,15 +161,15 @@
     }
 
     .brand-title p {
-      font-size: 0.8rem;
+      font-size: 0.74rem;
       color: var(--text-muted);
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
 
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .currency-selector {
@@ -177,9 +177,9 @@
       border: 1px solid var(--border-subtle);
       color: var(--theme-accent);
       font-family: var(--font-mono);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      padding: 7px 12px;
+      padding: 6px 10px;
       border-radius: var(--radius-sm);
       outline: none;
       cursor: pointer;
@@ -188,15 +188,15 @@
 
     .currency-selector:hover, .currency-selector:focus {
       border-color: var(--theme-accent);
-      box-shadow: 0 0 12px var(--theme-glow);
+      box-shadow: 0 0 10px var(--theme-glow);
     }
 
     .btn-icon {
       background: rgba(15, 23, 42, 0.8);
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
@@ -208,21 +208,133 @@
     .btn-icon:hover {
       color: var(--theme-accent);
       border-color: var(--border-highlight);
-      box-shadow: 0 0 12px var(--theme-glow);
+      box-shadow: 0 0 10px var(--theme-glow);
       transform: translateY(-1px);
+    }
+
+    /* HERO TELEMETRY CARD - Prominent at the top for immediate mobile & desktop visibility */
+    .hero-telemetry-banner {
+      background: linear-gradient(135deg, rgba(10, 18, 38, 0.9) 0%, rgba(6, 12, 24, 0.95) 100%);
+      backdrop-filter: blur(25px);
+      border: 1px solid var(--border-highlight);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.4), 0 0 20px var(--theme-glow);
+      display: grid;
+      grid-template-columns: 1.4fr 1.6fr;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-telemetry-banner::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--theme-accent), transparent);
+    }
+
+    .hero-primary-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .hero-label-top {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--theme-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-live-badge {
+      font-size: 0.6rem;
+      font-family: var(--font-mono);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--emerald-accent);
+      padding: 1px 5px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-main-value {
+      font-size: 2.6rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #ffffff;
+      text-shadow: 0 0 20px var(--theme-glow);
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-subtext-note {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* Hero Secondary Metrics Strip */
+    .hero-stats-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .hero-stat-pill {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: var(--transition-smooth);
+    }
+
+    .hero-stat-pill:hover {
+      border-color: var(--border-subtle);
+      background: rgba(20, 32, 58, 0.7);
+    }
+
+    .hero-stat-lbl {
+      font-size: 0.66rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-weight: 600;
+    }
+
+    .hero-stat-val {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+    }
+
+    .hero-stat-pill.accent-tip .hero-stat-val {
+      color: var(--emerald-accent);
+    }
+
+    .hero-stat-pill.accent-total .hero-stat-val {
+      color: var(--theme-accent);
     }
 
     /* Main Grid Layout */
     .calculator-grid {
       display: grid;
-      grid-template-columns: 1.18fr 0.82fr;
-      gap: 24px;
-    }
-
-    @media (max-width: 900px) {
-      .calculator-grid {
-        grid-template-columns: 1fr;
-      }
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+      align-items: start;
     }
 
     /* Input & Control Panel */
@@ -230,33 +342,23 @@
       background: var(--bg-surface);
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-xl);
-      padding: 24px;
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      gap: 16px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.35);
       position: relative;
-    }
-
-    .panel::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 30px;
-      right: 30px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border-highlight), transparent);
     }
 
     /* Navigation Tab Bar */
     .panel-tabs {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       background: rgba(6, 11, 23, 0.7);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 5px;
+      padding: 4px;
     }
 
     .panel-tab-btn {
@@ -264,17 +366,17 @@
       background: transparent;
       border: 1px solid transparent;
       color: var(--text-muted);
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.85rem;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
       font-weight: 700;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       transition: var(--transition-smooth);
     }
 
@@ -287,15 +389,15 @@
       background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(15, 23, 42, 0.9));
       border-color: var(--theme-accent);
       color: var(--theme-accent);
-      box-shadow: 0 0 14px var(--theme-glow);
+      box-shadow: 0 0 12px var(--theme-glow);
     }
 
     .tab-badge {
       font-family: var(--font-mono);
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       background: rgba(0, 240, 255, 0.12);
       border: 1px solid var(--border-highlight);
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 4px;
       letter-spacing: 0.3px;
     }
@@ -304,8 +406,8 @@
     .tab-pane {
       display: none;
       flex-direction: column;
-      gap: 22px;
-      animation: fadeIn 0.22s ease-in-out;
+      gap: 16px;
+      animation: fadeIn 0.2s ease-in-out;
     }
 
     .tab-pane.active {
@@ -313,7 +415,7 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
+      from { opacity: 0; transform: translateY(3px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -321,22 +423,22 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .section-label {
-      font-size: 0.78rem;
+      font-size: 0.74rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
       color: var(--theme-muted);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .section-badge {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-family: var(--font-mono);
       color: var(--text-dim);
     }
@@ -350,8 +452,8 @@
 
     .currency-symbol-large {
       position: absolute;
-      left: 20px;
-      font-size: 2rem;
+      left: 16px;
+      font-size: 1.6rem;
       font-family: var(--font-mono);
       font-weight: 600;
       color: var(--theme-accent);
@@ -364,19 +466,19 @@
       background: rgba(6, 11, 23, 0.85);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 18px 20px 18px 56px;
-      font-size: 2.2rem;
+      padding: 14px 16px 14px 44px;
+      font-size: 1.8rem;
       font-family: var(--font-mono);
       font-weight: 700;
       color: #ffffff;
       outline: none;
       transition: var(--transition-smooth);
-      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
     }
 
     .bill-input:focus {
       border-color: var(--theme-accent);
-      box-shadow: 0 0 20px var(--theme-glow), inset 0 2px 8px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 16px var(--theme-glow), inset 0 2px 6px rgba(0, 0, 0, 0.6);
     }
 
     .bill-input::placeholder {
@@ -385,8 +487,8 @@
 
     .bill-quick-chips {
       display: flex;
-      gap: 8px;
-      margin-top: 10px;
+      gap: 6px;
+      margin-top: 8px;
       flex-wrap: wrap;
     }
 
@@ -395,8 +497,8 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       color: var(--text-muted);
       font-family: var(--font-mono);
-      font-size: 0.75rem;
-      padding: 5px 12px;
+      font-size: 0.72rem;
+      padding: 4px 10px;
       border-radius: 6px;
       cursor: pointer;
       transition: var(--transition-smooth);
@@ -413,22 +515,16 @@
     .tip-presets {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-    }
-
-    @media (max-width: 500px) {
-      .tip-presets {
-        grid-template-columns: repeat(3, 1fr);
-      }
+      gap: 8px;
     }
 
     .tip-preset-btn {
       background: rgba(10, 16, 31, 0.85);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 12px 6px;
+      padding: 10px 4px;
       font-family: var(--font-mono);
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--text-main);
       cursor: pointer;
@@ -436,32 +532,31 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 2px;
       position: relative;
       overflow: hidden;
     }
 
     .tip-preset-btn span.label-sub {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       font-family: var(--font-ui);
       font-weight: 500;
       color: var(--text-dim);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
     }
 
     .tip-preset-btn:hover {
       border-color: var(--theme-muted);
       background: rgba(15, 25, 48, 0.9);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transform: translateY(-1px);
     }
 
     .tip-preset-btn.active {
       border-color: var(--theme-accent);
       background: linear-gradient(180deg, rgba(0, 240, 255, 0.15) 0%, rgba(10, 22, 45, 0.9) 100%);
       color: var(--theme-accent);
-      box-shadow: 0 0 16px var(--theme-glow), inset 0 0 12px rgba(0, 240, 255, 0.1);
+      box-shadow: 0 0 14px var(--theme-glow), inset 0 0 10px rgba(0, 240, 255, 0.1);
     }
 
     .tip-preset-btn.active span.label-sub {
@@ -470,14 +565,14 @@
 
     /* Slider Container */
     .slider-box {
-      margin-top: 14px;
+      margin-top: 10px;
       background: rgba(6, 11, 23, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: var(--radius-md);
-      padding: 16px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .slider-header {
@@ -493,23 +588,23 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
       padding: 2px 4px;
-      gap: 6px;
+      gap: 4px;
       transition: var(--transition-smooth);
     }
 
     .tip-stepper-box:focus-within {
       border-color: var(--theme-accent);
-      box-shadow: 0 0 10px var(--theme-glow);
+      box-shadow: 0 0 8px var(--theme-glow);
     }
 
     .tip-stepper-btn {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 4px;
       background: rgba(30, 41, 59, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.08);
       color: #ffffff;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -525,29 +620,25 @@
       border-color: var(--border-highlight);
     }
 
-    .tip-stepper-btn:active {
-      transform: scale(0.95);
-    }
-
     .slider-val-tag {
       font-family: var(--font-mono);
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--theme-accent);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .custom-input-stepper {
-      width: 60px;
+      width: 52px;
       background: rgba(15, 23, 42, 0.9);
       border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 4px 6px;
+      border-radius: 5px;
+      padding: 3px 4px;
       color: #ffffff;
       font-family: var(--font-mono);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       text-align: right;
       outline: none;
@@ -556,7 +647,7 @@
 
     .custom-input-stepper:focus {
       border-color: var(--theme-accent);
-      box-shadow: 0 0 8px var(--theme-glow);
+      box-shadow: 0 0 6px var(--theme-glow);
     }
 
     /* Range Slider Styling */
@@ -575,43 +666,42 @@
     .range-input::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: #ffffff;
       border: 3px solid var(--theme-accent);
       cursor: pointer;
-      box-shadow: 0 0 12px var(--theme-accent);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 0 10px var(--theme-accent);
+      transition: transform 0.15s ease;
     }
 
     .range-input::-webkit-slider-thumb:hover {
       transform: scale(1.15);
-      box-shadow: 0 0 18px var(--theme-accent);
     }
 
     .range-input::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: #ffffff;
       border: 3px solid var(--theme-accent);
       cursor: pointer;
-      box-shadow: 0 0 12px var(--theme-accent);
+      box-shadow: 0 0 10px var(--theme-accent);
     }
 
     /* Split Section */
     .split-control-grid {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 16px;
+      gap: 14px;
       align-items: center;
     }
 
     .split-slider-wrap {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .split-stepper-box {
@@ -620,18 +710,18 @@
       background: rgba(6, 11, 23, 0.85);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 4px;
-      gap: 4px;
+      padding: 3px;
+      gap: 3px;
     }
 
     .stepper-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
       background: rgba(30, 41, 59, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.05);
       color: #ffffff;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 600;
       display: flex;
       align-items: center;
@@ -647,10 +737,10 @@
     }
 
     .people-count-display {
-      width: 52px;
+      width: 44px;
       text-align: center;
       font-family: var(--font-mono);
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: #ffffff;
       border: none;
@@ -661,17 +751,17 @@
     /* People Visual Indicator Dots */
     .people-indicator {
       display: flex;
-      gap: 4px;
+      gap: 3px;
       flex-wrap: wrap;
-      min-height: 18px;
+      min-height: 14px;
     }
 
     .person-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: var(--theme-muted);
-      box-shadow: 0 0 6px var(--theme-glow);
+      box-shadow: 0 0 5px var(--theme-glow);
       transition: var(--transition-smooth);
       animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
@@ -686,7 +776,7 @@
       background: rgba(6, 11, 23, 0.7);
       border: 1px dashed var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 12px 16px;
+      padding: 10px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -697,24 +787,24 @@
     .active-mode-banner:hover {
       border-color: var(--theme-accent);
       background: rgba(15, 23, 42, 0.8);
-      box-shadow: 0 0 12px var(--theme-glow);
+      box-shadow: 0 0 10px var(--theme-glow);
     }
 
     .mode-info {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
     }
 
     .mode-label {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.6px;
       color: var(--text-dim);
     }
 
     .mode-val {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
       color: var(--theme-accent);
       font-family: var(--font-mono);
@@ -724,7 +814,7 @@
       background: none;
       border: none;
       color: var(--theme-muted);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -733,67 +823,56 @@
       transition: var(--transition-smooth);
     }
 
-    .active-mode-banner:hover .btn-link {
-      color: #ffffff;
-      transform: translateX(2px);
-    }
-
     /* Settings Tab Styles */
     .settings-group {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .settings-group-title {
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
       color: var(--theme-muted);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      padding-bottom: 6px;
+      padding-bottom: 4px;
     }
 
     /* Rounding Mode Section */
     .rounding-options {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    @media (max-width: 600px) {
-      .rounding-options {
-        grid-template-columns: 1fr;
-      }
+      gap: 8px;
     }
 
     .round-card {
       background: rgba(10, 16, 31, 0.85);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 14px 12px;
+      padding: 12px 10px;
       cursor: pointer;
       transition: var(--transition-smooth);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       position: relative;
     }
 
     .round-card:hover {
       border-color: var(--border-highlight);
       background: rgba(15, 25, 48, 0.85);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
 
     .round-card.active {
       border-color: var(--emerald-accent);
       background: linear-gradient(180deg, rgba(16, 185, 129, 0.15) 0%, rgba(10, 22, 45, 0.9) 100%);
-      box-shadow: 0 0 16px var(--emerald-glow), inset 0 0 10px rgba(16, 185, 129, 0.1);
+      box-shadow: 0 0 14px var(--emerald-glow), inset 0 0 8px rgba(16, 185, 129, 0.1);
     }
 
     .round-card-header {
@@ -803,10 +882,10 @@
     }
 
     .round-card-title {
-      font-size: 0.84rem;
+      font-size: 0.8rem;
       font-weight: 700;
       color: #ffffff;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
 
     .round-card.active .round-card-title {
@@ -814,8 +893,8 @@
     }
 
     .round-indicator-dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       border: 2px solid var(--text-dim);
       transition: var(--transition-smooth);
@@ -824,20 +903,20 @@
     .round-card.active .round-indicator-dot {
       border-color: var(--emerald-accent);
       background: var(--emerald-accent);
-      box-shadow: 0 0 8px var(--emerald-accent);
+      box-shadow: 0 0 6px var(--emerald-accent);
     }
 
     .round-card-desc {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       color: var(--text-muted);
-      line-height: 1.35;
+      line-height: 1.3;
     }
 
     .round-status-badge {
       font-family: var(--font-mono);
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       color: var(--emerald-accent);
-      margin-top: 4px;
+      margin-top: 2px;
       font-weight: 600;
     }
 
@@ -849,24 +928,24 @@
       background: rgba(10, 16, 31, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      gap: 14px;
+      padding: 10px 12px;
+      gap: 12px;
     }
 
     .setting-info {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
     }
 
     .setting-title {
-      font-size: 0.84rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: #ffffff;
     }
 
     .setting-desc {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       color: var(--text-muted);
     }
 
@@ -874,8 +953,8 @@
     .switch {
       position: relative;
       display: inline-block;
-      width: 44px;
-      height: 24px;
+      width: 40px;
+      height: 22px;
       flex-shrink: 0;
     }
 
@@ -891,42 +970,42 @@
       inset: 0;
       background-color: rgba(30, 41, 59, 0.8);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: .25s;
-      border-radius: 24px;
+      transition: .2s;
+      border-radius: 22px;
     }
 
     .slider:before {
       position: absolute;
       content: "";
-      height: 16px;
-      width: 16px;
+      height: 14px;
+      width: 14px;
       left: 3px;
       bottom: 3px;
       background-color: white;
-      transition: .25s;
+      transition: .2s;
       border-radius: 50%;
     }
 
     input:checked + .slider {
       background-color: var(--theme-accent);
       border-color: var(--theme-accent);
-      box-shadow: 0 0 10px var(--theme-glow);
+      box-shadow: 0 0 8px var(--theme-glow);
     }
 
     input:checked + .slider:before {
-      transform: translateX(20px);
+      transform: translateX(18px);
       background-color: #060911;
     }
 
     /* Theme Swatches */
     .theme-swatches {
       display: flex;
-      gap: 8px;
+      gap: 6px;
     }
 
     .theme-swatch {
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       border: 2px solid transparent;
       cursor: pointer;
@@ -936,7 +1015,7 @@
     .theme-swatch.active {
       border-color: #ffffff;
       transform: scale(1.15);
-      box-shadow: 0 0 10px currentColor;
+      box-shadow: 0 0 8px currentColor;
     }
 
     /* Right HUD Result Panel */
@@ -944,46 +1023,34 @@
       background: linear-gradient(160deg, rgba(10, 18, 38, 0.85) 0%, rgba(6, 12, 24, 0.95) 100%);
       backdrop-filter: blur(25px);
       border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-xl);
-      padding: 30px;
+      border-radius: var(--radius-lg);
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 24px;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+      gap: 16px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.4);
       position: relative;
-      overflow: hidden;
-    }
-
-    .hud-panel::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, var(--theme-glow) 0%, transparent 60%);
-      pointer-events: none;
     }
 
     .hud-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 16px;
+      padding-bottom: 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     }
 
     .hud-title {
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-family: var(--font-mono);
       font-weight: 700;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       color: var(--theme-muted);
       text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .pulse-dot {
@@ -991,7 +1058,7 @@
       height: 6px;
       border-radius: 50%;
       background: var(--theme-accent);
-      box-shadow: 0 0 8px var(--theme-accent);
+      box-shadow: 0 0 6px var(--theme-accent);
       animation: pulseAnim 2s infinite;
     }
 
@@ -1002,75 +1069,27 @@
     }
 
     .system-status {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-family: var(--font-mono);
       color: var(--emerald-accent);
       background: rgba(16, 185, 129, 0.1);
       border: 1px solid rgba(16, 185, 129, 0.25);
-      padding: 3px 8px;
+      padding: 2px 6px;
       border-radius: 4px;
-    }
-
-    /* Primary Hero Metric: Each Person Pays */
-    .hero-metric {
-      background: rgba(6, 11, 24, 0.7);
-      border: 1px solid var(--border-highlight);
-      border-radius: var(--radius-lg);
-      padding: 24px 20px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 25px var(--theme-glow);
-    }
-
-    .hero-metric::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--theme-accent), transparent);
-    }
-
-    .hero-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--theme-muted);
-      margin-bottom: 6px;
-    }
-
-    .hero-value {
-      font-size: 3.2rem;
-      font-family: var(--font-mono);
-      font-weight: 800;
-      color: #ffffff;
-      text-shadow: 0 0 25px var(--theme-glow);
-      line-height: 1.1;
-      margin-bottom: 8px;
-      letter-spacing: -1px;
-    }
-
-    .hero-subtext {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
     }
 
     /* Detailed Breakdown Matrix */
     .breakdown-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
     }
 
     .breakdown-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 14px;
+      padding: 8px 12px;
       background: rgba(15, 23, 42, 0.5);
       border: 1px solid rgba(255, 255, 255, 0.04);
       border-radius: var(--radius-sm);
@@ -1083,11 +1102,11 @@
     }
 
     .breakdown-label {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .breakdown-label svg {
@@ -1098,7 +1117,7 @@
 
     .breakdown-value {
       font-family: var(--font-mono);
-      font-size: 1.05rem;
+      font-size: 0.98rem;
       font-weight: 700;
       color: #ffffff;
     }
@@ -1110,7 +1129,7 @@
 
     .breakdown-row.accent-total .breakdown-value {
       color: var(--theme-accent);
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
 
     .breakdown-row.accent-tip .breakdown-value {
@@ -1122,11 +1141,11 @@
       background: rgba(6, 11, 23, 0.6);
       border: 1px dashed var(--border-subtle);
       border-radius: var(--radius-sm);
-      padding: 10px 14px;
+      padding: 8px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.78rem;
+      font-size: 0.74rem;
     }
 
     .delta-text {
@@ -1138,14 +1157,14 @@
       font-weight: 600;
       color: var(--emerald-accent);
       background: rgba(16, 185, 129, 0.12);
-      padding: 2px 8px;
+      padding: 2px 6px;
       border-radius: 4px;
     }
 
     /* Action Buttons in HUD */
     .hud-actions {
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
 
     .btn-action-primary {
@@ -1153,39 +1172,39 @@
       background: linear-gradient(135deg, #0ea5e9, #0284c7);
       border: 1px solid var(--theme-accent);
       color: #ffffff;
-      padding: 14px 18px;
+      padding: 12px 14px;
       border-radius: var(--radius-md);
-      font-size: 0.88rem;
+      font-size: 0.84rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       transition: var(--transition-smooth);
-      box-shadow: 0 4px 18px rgba(14, 165, 233, 0.35);
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
     }
 
     .btn-action-primary:hover {
       background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-      box-shadow: 0 6px 24px rgba(56, 189, 248, 0.5);
-      transform: translateY(-2px);
+      box-shadow: 0 4px 18px rgba(56, 189, 248, 0.5);
+      transform: translateY(-1px);
     }
 
     .btn-action-secondary {
       background: rgba(15, 23, 42, 0.8);
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
-      padding: 14px 18px;
+      padding: 12px 14px;
       border-radius: var(--radius-md);
-      font-size: 0.88rem;
+      font-size: 0.84rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       transition: var(--transition-smooth);
     }
 
@@ -1193,29 +1212,28 @@
       background: rgba(30, 41, 59, 0.8);
       color: #ffffff;
       border-color: var(--border-highlight);
-      transform: translateY(-2px);
     }
 
     /* Toast Notification */
     .toast {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
+      bottom: 20px;
+      right: 20px;
       background: rgba(15, 23, 42, 0.95);
       border: 1px solid var(--theme-accent);
-      box-shadow: 0 10px 30px var(--theme-glow);
+      box-shadow: 0 8px 24px var(--theme-glow);
       backdrop-filter: blur(16px);
-      padding: 12px 20px;
+      padding: 10px 16px;
       border-radius: var(--radius-md);
       color: #ffffff;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       transform: translateY(100px);
       opacity: 0;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 9999;
     }
 
@@ -1226,11 +1244,11 @@
 
     /* Per-person Visual Roster */
     .roster-card {
-      margin-top: 14px;
+      margin-top: 10px;
       background: rgba(6, 11, 23, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: var(--radius-md);
-      padding: 12px 14px;
+      padding: 10px 12px;
     }
 
     .roster-header {
@@ -1238,19 +1256,19 @@
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       color: var(--theme-muted);
       font-weight: 600;
     }
 
     .roster-content {
-      margin-top: 10px;
+      margin-top: 8px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 8px;
-      max-height: 180px;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 6px;
+      max-height: 160px;
       overflow-y: auto;
       padding-right: 4px;
     }
@@ -1259,21 +1277,21 @@
       background: rgba(15, 23, 42, 0.65);
       border: 1px solid rgba(255, 255, 255, 0.04);
       border-radius: 6px;
-      padding: 6px 10px;
+      padding: 5px 8px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
     }
 
     .roster-item-name {
-      font-size: 0.7rem;
+      font-size: 0.66rem;
       color: var(--text-dim);
       font-weight: 600;
     }
 
     .roster-item-amount {
       font-family: var(--font-mono);
-      font-size: 0.88rem;
+      font-size: 0.84rem;
       font-weight: 700;
       color: #ffffff;
     }
@@ -1281,13 +1299,14 @@
     /* Footer Info */
     footer {
       text-align: center;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-dim);
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
+      padding: 8px 0;
     }
 
     footer span.sep {
@@ -1296,7 +1315,7 @@
 
     /* Custom Scrollbar */
     ::-webkit-scrollbar {
-      width: 6px;
+      width: 5px;
     }
     ::-webkit-scrollbar-track {
       background: rgba(6, 11, 23, 0.5);
@@ -1305,8 +1324,92 @@
       background: rgba(56, 189, 248, 0.25);
       border-radius: 3px;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(56, 189, 248, 0.45);
+
+    /* RESPONSIVE OPTIMIZATION FOR MOBILE DEVICES (Pixel 10 Pro XL, Galaxy Z Fold8 Ultra) */
+    @media (max-width: 900px) {
+      body {
+        padding: 12px 10px;
+      }
+
+      .app-container {
+        gap: 12px;
+      }
+
+      header {
+        padding: 10px 14px;
+      }
+
+      .brand-title h1 {
+        font-size: 0.95rem;
+      }
+
+      .brand-title p {
+        font-size: 0.68rem;
+      }
+
+      /* Stack hero banner cleanly: primary hero on top, stats strip right below */
+      .hero-telemetry-banner {
+        grid-template-columns: 1fr;
+        padding: 14px 16px;
+        gap: 12px;
+        position: sticky;
+        top: 8px;
+        z-index: 100;
+      }
+
+      .hero-main-value {
+        font-size: 2.2rem;
+      }
+
+      .hero-stats-strip {
+        gap: 6px;
+      }
+
+      .hero-stat-pill {
+        padding: 6px 8px;
+      }
+
+      .hero-stat-val {
+        font-size: 0.95rem;
+      }
+
+      /* One-column grid on mobile */
+      .calculator-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .panel {
+        padding: 14px 14px;
+        gap: 14px;
+      }
+
+      .bill-input {
+        font-size: 1.6rem;
+        padding: 12px 14px 12px 40px;
+      }
+
+      .currency-symbol-large {
+        font-size: 1.4rem;
+        left: 14px;
+      }
+
+      .tip-presets {
+        gap: 6px;
+      }
+
+      .tip-preset-btn {
+        padding: 8px 3px;
+        font-size: 0.92rem;
+      }
+
+      .slider-box {
+        padding: 10px 12px;
+      }
+
+      .rounding-options {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -1317,7 +1420,7 @@
     <header>
       <div class="brand">
         <div class="brand-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="4" width="20" height="16" rx="2"/>
             <line x1="12" y1="8" x2="12" y2="16"/>
             <line x1="8" y1="12" x2="16" y2="12"/>
@@ -1340,19 +1443,47 @@
           <option value="CHF">CHF (₣)</option>
         </select>
         <button id="btnHeaderSettings" class="btn-icon" title="Toggle Settings Tab">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
         </button>
         <button id="btnReset" class="btn-icon" title="Reset All Values">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
             <path d="M3 3v5h5"/>
           </svg>
         </button>
       </div>
     </header>
+
+    <!-- HERO TELEMETRY HUD BAR (Positioned at top for instant mobile visibility without scrolling) -->
+    <section class="hero-telemetry-banner" id="heroTelemetryBanner">
+      <div class="hero-primary-block">
+        <div class="hero-label-top">
+          <div class="pulse-dot"></div>
+          Each Person Pays
+          <span class="hero-live-badge" id="heroLiveBadge">SYNCHRONIZED</span>
+        </div>
+        <div id="displayHeroPerPerson" class="hero-main-value">$0.00</div>
+        <div id="displayHeroSubtext" class="hero-subtext-note">Includes $0.00 bill + $0.00 tip</div>
+      </div>
+
+      <div class="hero-stats-strip">
+        <div class="hero-stat-pill accent-total">
+          <span class="hero-stat-lbl">Grand Total</span>
+          <span id="displayHeroGrandTotal" class="hero-stat-val">$0.00</span>
+        </div>
+        <div class="hero-stat-pill accent-tip">
+          <span class="hero-stat-lbl">Tip Total (<span id="displayHeroTipPct">20%</span>)</span>
+          <span id="displayHeroTipAmount" class="hero-stat-val">$0.00</span>
+        </div>
+        <div class="hero-stat-pill">
+          <span class="hero-stat-lbl">Party Split</span>
+          <span id="displayHeroPartySize" class="hero-stat-val">1 Person</span>
+        </div>
+      </div>
+    </section>
 
     <!-- Main Content Grid -->
     <div class="calculator-grid">
@@ -1361,7 +1492,7 @@
         <!-- Navigation Tab Switcher -->
         <div class="panel-tabs">
           <button id="tabBtnCalc" class="panel-tab-btn active" type="button">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="4" width="20" height="16" rx="2"/>
               <line x1="12" y1="8" x2="12" y2="16"/>
               <line x1="8" y1="12" x2="16" y2="12"/>
@@ -1369,9 +1500,9 @@
             Calculator
           </button>
           <button id="tabBtnSettings" class="panel-tab-btn" type="button">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="3"/>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
             </svg>
             Settings
             <span class="tab-badge" id="tabRoundingBadge">EXACT</span>
@@ -1384,7 +1515,7 @@
           <div class="control-group">
             <div class="section-header">
               <span class="section-label">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <line x1="12" y1="1" x2="12" y2="23"/>
                   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                 </svg>
@@ -1410,7 +1541,7 @@
           <div class="control-group">
             <div class="section-header">
               <span class="section-label">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="12" cy="12" r="10"/>
                   <line x1="12" y1="8" x2="12" y2="12"/>
                   <line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -1445,7 +1576,7 @@
 
             <div class="slider-box">
               <div class="slider-header">
-                <span style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase;">Fine-Tune Rate</span>
+                <span style="font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase;">Fine-Tune Rate</span>
                 <div class="tip-stepper-box">
                   <button id="btnTipMinus" class="tip-stepper-btn" type="button" title="Decrease Tip by 1%">−</button>
                   <div class="slider-val-tag">
@@ -1463,7 +1594,7 @@
           <div class="control-group">
             <div class="section-header">
               <span class="section-label">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                   <circle cx="9" cy="7" r="4"/>
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
@@ -1642,34 +1773,27 @@
           </div>
 
           <!-- 5. Reset Settings -->
-          <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
-            <button id="btnResetSettings" class="btn-action-secondary" style="padding: 10px 16px; font-size: 0.8rem;" type="button">
+          <div style="display: flex; justify-content: flex-end; margin-top: 2px;">
+            <button id="btnResetSettings" class="btn-action-secondary" style="padding: 8px 14px; font-size: 0.78rem;" type="button">
               Restore Default Settings
             </button>
           </div>
         </div>
       </section>
 
-      <!-- Results HUD Panel -->
+      <!-- Results HUD Panel (Detailed Telemetry) -->
       <aside class="hud-panel">
         <div>
           <div class="hud-header">
             <div class="hud-title">
               <div class="pulse-dot"></div>
-              LIVE OUTPUT // TELEMETRY
+              DETAILED TELEMETRY // MATRIX
             </div>
             <span class="system-status">SYNCHRONIZED</span>
           </div>
 
-          <!-- Hero Metric: Per Person -->
-          <div class="hero-metric" style="margin-top: 20px;">
-            <div class="hero-label">Amount Per Person</div>
-            <div id="displayPerPerson" class="hero-value">$0.00</div>
-            <div id="displayPerPersonSubtext" class="hero-subtext">Includes $0.00 bill + $0.00 tip</div>
-          </div>
-
           <!-- Secondary Metrics -->
-          <div class="breakdown-list" style="margin-top: 20px;">
+          <div class="breakdown-list" style="margin-top: 14px;">
             <div class="breakdown-row">
               <span class="breakdown-label">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -1712,7 +1836,7 @@
           </div>
 
           <!-- Rounding Delta Notice -->
-          <div class="rounding-delta-container" id="roundingDeltaBox" style="margin-top: 14px;">
+          <div class="rounding-delta-container" id="roundingDeltaBox" style="margin-top: 12px;">
             <span class="delta-text" id="deltaLabel">Rounding adjustment:</span>
             <span class="delta-badge" id="deltaBadge">+$0.00 extra to tip</span>
           </div>
@@ -1730,9 +1854,9 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="hud-actions">
+        <div class="hud-actions" style="margin-top: 14px;">
           <button id="btnCopy" class="btn-action-primary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
             </svg>
@@ -1747,9 +1871,11 @@
 
     <!-- Footer -->
     <footer>
-      <span>APEX ENGINE v4.0</span>
+      <span>APEX ENGINE v8.0</span>
       <span class="sep">//</span>
-      <span>PERSISTENT CONFIGURATION MATRIX</span>
+      <span>MOBILE HUD v8.0</span>
+      <span class="sep">//</span>
+      <span>MOBILE ZERO-SCROLL ARCHITECTURE</span>
       <span class="sep">//</span>
       <span>OFFLINE SECURE CLIENT RUNTIME</span>
     </footer>
@@ -1757,7 +1883,7 @@
 
   <!-- Toast Notification -->
   <div id="toast" class="toast">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--theme-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--theme-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
       <polyline points="22 4 12 14.01 9 11.01"/>
     </svg>
@@ -1829,6 +1955,14 @@
     const bannerRoundingText = document.getElementById('bannerRoundingText');
     const btnHeaderSettings = document.getElementById('btnHeaderSettings');
 
+    // DOM Elements: Top Hero Telemetry Display
+    const displayHeroPerPerson = document.getElementById('displayHeroPerPerson');
+    const displayHeroSubtext = document.getElementById('displayHeroSubtext');
+    const displayHeroGrandTotal = document.getElementById('displayHeroGrandTotal');
+    const displayHeroTipAmount = document.getElementById('displayHeroTipAmount');
+    const displayHeroTipPct = document.getElementById('displayHeroTipPct');
+    const displayHeroPartySize = document.getElementById('displayHeroPartySize');
+
     // DOM Elements: Calculator Inputs
     const billInput = document.getElementById('billInput');
     const tipPresetBtns = document.querySelectorAll('.tip-preset-btn');
@@ -1862,9 +1996,7 @@
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toastMessage');
 
-    // Result Display Elements
-    const displayPerPerson = document.getElementById('displayPerPerson');
-    const displayPerPersonSubtext = document.getElementById('displayPerPersonSubtext');
+    // Result Display Elements (Detailed Breakdown)
     const displayBaseBill = document.getElementById('displayBaseBill');
     const displayTipTotal = document.getElementById('displayTipTotal');
     const displayEffectiveTipRate = document.getElementById('displayEffectiveTipRate');
@@ -1891,7 +2023,7 @@
         paneSettings.classList.add('active');
         paneCalculator.classList.remove('active');
       }
-      playBeep(750, 0.05);
+      playBeep(750, 0.04);
     }
 
     tabBtnCalc.addEventListener('click', () => switchTab('calc'));
@@ -1985,11 +2117,15 @@
     function recalculate() {
       const res = calculate();
 
-      // Display Hero
-      displayPerPerson.textContent = fmt(res.finalPerPerson);
-      displayPerPersonSubtext.textContent = `Includes ${fmt(res.finalPerPersonBill)} bill + ${fmt(res.finalPerPersonTip)} tip`;
+      // Display Hero Telemetry (Top Banner - Visible on Mobile without Scrolling)
+      displayHeroPerPerson.textContent = fmt(res.finalPerPerson);
+      displayHeroSubtext.textContent = `Includes ${fmt(res.finalPerPersonBill)} bill + ${fmt(res.finalPerPersonTip)} tip`;
+      displayHeroGrandTotal.textContent = fmt(res.finalGrandTotal);
+      displayHeroTipAmount.textContent = fmt(res.finalTipAmount);
+      displayHeroTipPct.textContent = `${res.effectiveTipRate.toFixed(1)}%`;
+      displayHeroPartySize.textContent = `${res.people} ${res.people === 1 ? 'Person' : 'People'}`;
 
-      // Display Secondary
+      // Display Detailed Telemetry in Right Panel
       displayBaseBill.textContent = fmt(res.bill);
       displayTipTotal.textContent = fmt(res.finalTipAmount);
       displayEffectiveTipRate.textContent = `${res.effectiveTipRate.toFixed(1)}%`;
@@ -2047,17 +2183,17 @@
     // Update Indicator Dots
     function updateDots(num) {
       peopleIndicator.innerHTML = '';
-      const displayCount = Math.min(num, 30);
+      const displayCount = Math.min(num, 24);
       for (let i = 0; i < displayCount; i++) {
         const dot = document.createElement('div');
         dot.className = 'person-dot';
         peopleIndicator.appendChild(dot);
       }
-      if (num > 30) {
+      if (num > 24) {
         const more = document.createElement('span');
-        more.style.fontSize = '0.65rem';
+        more.style.fontSize = '0.62rem';
         more.style.color = 'var(--text-dim)';
-        more.textContent = `+${num - 30} more`;
+        more.textContent = `+${num - 24} more`;
         peopleIndicator.appendChild(more);
       }
     }

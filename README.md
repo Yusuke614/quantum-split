@@ -1,6 +1,6 @@
 # quantum-split
 
-> A high-precision, real-time gratuity engine and bill-splitting web application designed with a sleek, high-tech interface, dedicated modular settings, and adaptive rounding controls.
+> A high-precision, real-time gratuity engine and bill-splitting web application designed with a sleek, high-tech interface, dedicated modular settings, adaptive rounding controls, and mobile zero-scroll architecture.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub Pages](https://img.shields.io/badge/Deployment-GitHub%20Pages-00f0ff.svg)](#-live-web-application)
@@ -18,6 +18,11 @@ Access the live web application hosted on GitHub Pages:
 ---
 
 ## ✨ Key Features
+
+### 📱 Mobile Zero-Scroll Telemetry Architecture
+* **Immediate Total Visibility**: Engineered specifically for flagship mobile viewports (including Google Pixel 10 Pro XL and Samsung Galaxy Z Fold8 Ultra) so the **Amount Per Person**, **Grand Total**, and **Tip Total** are 100% visible on screen alongside your inputs with **zero scrolling required**.
+* **Top-Docked Hero Telemetry**: The primary calculation summary sits prominently at the top with a sticky pin when scrolling down to secondary breakdowns or itemized party rosters.
+* **Compact High-Density HUD**: Compact micro-steppers, streamlined inputs, and refined responsive padding ensure the complete core calculation loop fits comfortably within modern 20:9 and foldable screen heights (~750px–920px).
 
 ### ⚡ Real-Time Gratuity & Bill Telemetry
 * **Live Reactive Math**: Instantly updates all metrics on every keystroke, slider drag, or stepper click.
@@ -67,7 +72,7 @@ A streamlined tab navigation separates real-time calculation from preference con
   * Glassmorphism (`backdrop-filter: blur(20px)`)
   * Cybernetic obsidian & multi-accent glow palettes
   * Tabular monospace typography for numeric alignment
-  * Fully responsive CSS Grid & Flexbox layouts (desktop & mobile optimized)
+  * Fully responsive CSS Grid & Flexbox layouts (desktop & mobile zero-scroll optimized)
 * **Audio**: Native Web Audio API (`AudioContext`, `OscillatorNode`) with zero external sound files.
 * **Icons**: Inline scalable SVGs (no external icon fonts or CDN requests required).
 
@@ -105,7 +110,7 @@ Then visit `http://localhost:8000` in your web browser.
    ```bash
    git init
    git add .
-   git commit -m "Initial commit: Quantum Split gratuity engine"
+   git commit -m "Release v5.0: Mobile zero-scroll telemetry HUD"
    git branch -M main
    git remote add origin https://github.com/yusuke614/quantum-split.git
    git push -u origin main
@@ -127,8 +132,8 @@ Then visit `http://localhost:8000` in your web browser.
 
 ```text
 quantum-split/
-├── index.html           # Main application entry point (v4 with session persistence)
-├── tip_calculator.html  # Standalone application bundle (v4 with session persistence)
+├── index.html           # Main application entry point (v5 zero-scroll layout)
+├── tip_calculator.html  # Standalone application bundle (v5 zero-scroll layout)
 ├── style.css            # Modular stylesheet
 ├── script.js            # Modular reactive logic
 └── README.md            # Project documentation and deployment guide
